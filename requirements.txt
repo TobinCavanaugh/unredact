@@ -1,0 +1,11 @@
+requests>=2.31
+
+# Semantic scoring (--semantic flag in unredact.py):
+#   pip install sentence-transformers
+# Windows CPU-only (avoids the multi-GB CUDA download), install torch first:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   pip install sentence-transformers
+
+# Future backends (currently stubs in unredact.py) will need:
+# torch>=2.3
+# transformers>=4.45
