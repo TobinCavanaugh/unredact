@@ -1,10 +1,11 @@
 {
-  "_comment": "Test set for the unredaction MVP (pure-text mode). Each entry: 'before'/'after' = the FULL document context split exactly at the redaction gap (more context = much better recovery); 'min_chars'/'max_chars' = how many characters fit in the box (derive with box_measure.py from box width + font size; the ground-truth length falls inside); 'ground_truth' = the original redacted text, used to score results. Source: known-good sample paragraph (India ballistic missile program). Numbers and locations deliberately left unredacted.",
+  "_comment": "Test set for the unredaction MVP (pure-text mode). Each entry: 'before'/'after' = the FULL document context split exactly at the redaction gap (more context = much better recovery); 'doc_context' = the full document text the redaction comes from (used by the keyness prior -- whole-document statistics only, generation stays windowed); 'min_chars'/'max_chars' = how many characters fit in the box (derive with box_measure.py from box width + font size; the ground-truth length falls inside); 'ground_truth' = the original redacted text, used to score results. Source: known-good sample paragraph (India ballistic missile program). Numbers and locations deliberately left unredacted.",
   "redactions": [
     {
       "id": "ind1_active",
       "before": "There is no direct evidence of an",
       "after": "Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
+      "doc_context": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
       "min_chars": 4,
       "max_chars": 8,
       "ground_truth": "active"
@@ -13,6 +14,7 @@
       "id": "ind2_deterrent",
       "before": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a",
       "after": "against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
+      "doc_context": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
       "min_chars": 7,
       "max_chars": 11,
       "ground_truth": "deterrent"
@@ -21,6 +23,7 @@
       "id": "ind3_potential",
       "before": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the",
       "after": "Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
+      "doc_context": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
       "min_chars": 7,
       "max_chars": 11,
       "ground_truth": "potential"
@@ -29,6 +32,7 @@
       "id": "ind4_northern",
       "before": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the",
       "after": "part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
+      "doc_context": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
       "min_chars": 6,
       "max_chars": 10,
       "ground_truth": "northern"
@@ -37,6 +41,7 @@
       "id": "ind5_large",
       "before": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a",
       "after": "percentage of China's population and industrial centers, including Peking.",
+      "doc_context": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
       "min_chars": 3,
       "max_chars": 7,
       "ground_truth": "large"
@@ -45,6 +50,7 @@
       "id": "ind6_industrial",
       "before": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and",
       "after": "centers, including Peking.",
+      "doc_context": "There is no direct evidence of an active Indian program to develop a strategic ballistic missile system. It does appear, however, that they intend to acquire such a system. We believe that the Indians are strongly motivated to acquire a missile force to act as a deterrent against the potential Chinese threat. For this purpose they would require an IRBM capable of delivering a nuclear warhead to a range of about 2,000 nm. Such a weapon system, if deployed in the northern part of India, could provide coverage of a large percentage of China's population and industrial centers, including Peking.",
       "min_chars": 8,
       "max_chars": 12,
       "ground_truth": "industrial"
@@ -53,6 +59,7 @@
       "id": "pak1_israel",
       "before": "The Pakistanis are believed to have a very strong motivation to acquire a ballistic missile system, primarily for use against targets in India. Pakistan's technology and industrial capability are inadequate to develop a missile system on its own. Massive assistance or purchase of a complete missile system from an outside source would be required. The only countries from which such assistance appears possible are",
       "after": "and China. with China being the more likely. Pakistan would probably prefer an IRBM, but they could have use for a shorter-range tactical ballistic missile",
+      "doc_context": "The Pakistanis are believed to have a very strong motivation to acquire a ballistic missile system, primarily for use against targets in India. Pakistan's technology and industrial capability are inadequate to develop a missile system on its own. Massive assistance or purchase of a complete missile system from an outside source would be required. The only countries from which such assistance appears possible are and China. with China being the more likely. Pakistan would probably prefer an IRBM, but they could have use for a shorter-range tactical ballistic missile",
       "min_chars": 5,
       "max_chars": 8,
       "ground_truth": "Israel",

@@ -4,3 +4,15 @@
 # Python
 __pycache__/
 *.pyc
+
+# Internal notes / design docs -- never commit these
+# (README.md is the public-facing doc and IS tracked)
+TODO.md
+notes.txt
+APPROACH.md
+
+# Scratch / tmp files
+tmp_*.txt
+
+# Build artifacts
+index.pdf

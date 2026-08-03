@@ -31,6 +31,10 @@ import json
 import os
 import sys
 
+# Reuse the keyness tokenizer/stemmer (stdlib-only module) so the echo guard
+# and the prior normalize words the same way.
+from keyness import tokenize, _stem
+
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
@@ -141,10 +145,12 @@ class SemanticScorer:
     a control token is. 1.0 = identical to GT, 0.0 = no better than the control.
     """
 
-    def __init__(self, control="zzzzzz", window=8):
+    def __init__(self, control="zzzzzz", window=8, echo_penalty=0.5):
         self._model = None
         self.control = control
         self.window = window
+        self.echo_penalty = echo_penalty
+        self.last_echo = set()
         self.last_control_sim = None
         self._warned_unreliable = False
         self._warned_noisy = False
@@ -180,10 +186,22 @@ class SemanticScorer:
         """
         self._ensure()
         self.last_control_sim = None  # reset so empty-candidates boxes don't leak a stale anchor
+        self.last_echo = set()
         if not candidates:
             return {}
         b_local = " ".join(before.split()[-self.window:]) if before else ""
         a_local = " ".join(after.split()[:self.window]) if after else ""
+        # Adjacency-echo guard: the contrastive anchor cannot punish a candidate
+        # that simply reproduces a word sitting right next to the gap (an echoed
+        # word is always closer to the GT slot than a nonsense control). So we
+        # knock `echo_penalty` off the score of any candidate that is mostly
+        # composed of adjacent-window words -- the "Indian"/"Chinese" failure
+        # mode. A long phrase that merely shares a few function words is left
+        # alone (shared/total ratio must be >= 0.5). Only content-length tokens
+        # (>=4 chars) count as echo: function words ("the", "of", "and") are
+        # ubiquitous in any window and would wrongly flag legit multi-word
+        # answers like "in the region".
+        adj = {s for t in tokenize(f"{b_local} {a_local}") if len(s := _stem(t)) >= 4}
         gt_slot = f"{b_local} {gt} {a_local}".strip()
         ctrl_slot = f"{b_local} {self.control} {a_local}".strip()
         gt_emb, ctrl_emb = self._model.encode([gt_slot, ctrl_slot], normalize_embeddings=True)
@@ -216,7 +234,14 @@ class SemanticScorer:
         out = {}
         for c, e in zip(candidates, cand_embs):
             raw = float(e @ gt_emb)
-            out[c] = ((raw - control_sim) / denom, raw)
+            score = (raw - control_sim) / denom
+            if self.echo_penalty > 0:
+                c_toks = {_stem(t) for t in tokenize(c)}
+                matched = c_toks & adj
+                if matched and len(matched) * 2 >= max(len(c_toks), 1):
+                    score -= self.echo_penalty
+                    self.last_echo.add(c)
+            out[c] = (score, raw)
         return out
 
 
@@ -467,8 +492,10 @@ BACKENDS = {
 # ---------------------------------------------------------------------------
 
 
-def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold=0.7, out=sys.stdout):
+def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold=0.7,
+        prior_weight=0.0, priors=None, out=sys.stdout):
     results = []  # (rid, gt, best, exact, sem, classification)
+    printed_priors = set()
     for red in redactions:
         print("=" * 70, file=out)
         print(f"redaction: {red.get('id', '?')}  "
@@ -492,6 +519,27 @@ def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold
             if scorer.last_control_sim is not None:
                 print(f"  [semantic] control_sim={scorer.last_control_sim:.2f} "
                       f"(anchor for contrastive scores)", file=out)
+            if gt and scorer is not None and scorer.last_echo:
+                print(f"  [semantic] echo-penalized {len(scorer.last_echo)} candidate(s) "
+                      f"(reproduce adjacent text; -{scorer.echo_penalty:.2f}): "
+                      f"{', '.join(sorted(scorer.last_echo))}", file=out)
+
+        # Keyness prior (two-sided): final = contrastive + prior_weight * prior(candidate)
+        prior = None
+        if prior_weight > 0 and priors:
+            prior = priors.get(red.get("doc_context", ""))
+            if prior is not None and red.get("doc_context") not in printed_priors:
+                print(f"  [keyness] {prior.describe()}", file=out)
+                printed_priors.add(red.get("doc_context"))
+        blended = {}  # text -> final score when the prior is active
+        if prior is not None and semantic:
+            # Echoed candidates get no prior credit: the prior's thematic terms
+            # overlap with adjacency (the model copied "Indian"/"Chinese" from
+            # the surrounding text), so re-crediting them would undo the echo
+            # penalty that batch_slot_scores already applied to the contrastive.
+            echoed = getattr(scorer, "last_echo", set())
+            blended = {c: sc + prior_weight * (0.0 if c in echoed else prior.score(c))
+                       for c, (sc, _raw) in semantic.items()}
 
         for fits, info in ranked:
             mark = "FIT " if fits else "    "
@@ -501,28 +549,45 @@ def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold
             if info["text"] in semantic:
                 score, raw = semantic[info["text"]]
                 flag += f"  cos={raw:.2f} sc={score:.2f}"
+            if info["text"] in blended:
+                flag += f" fin={blended[info['text']]:.2f}"
+            if gt and scorer is not None and info["text"] in scorer.last_echo:
+                flag += "  (echo)"
             print(f"  [{mark}] chars={info['chars']}{flag}  |{info['text']}|", file=out)
 
         if gt:
-            ranked_best = ranked[0][1]["text"] if ranked else ""
+            # The scorer (echo-penalized contrastive, plus the keyness blend
+            # when the prior is active) selects the best in-range candidate;
+            # char-range closeness is only a fallback when no in-range
+            # candidate was scored (e.g. the control anchor was unreliable).
+            in_range = [info["text"] for fits, info in ranked if info["fits_chars"]]
+            if semantic and in_range and any(t in semantic for t in in_range):
+                ranked_best = max(
+                    in_range,
+                    key=lambda t: blended.get(t, semantic.get(t, (-1e9, 0))[0]))
+            elif in_range:
+                ranked_best = ranked[0][1]["text"] if ranked else ""
+            else:
+                ranked_best = ranked[0][1]["text"] if ranked else ""
             exact = any(info["text"].strip().lower() == gt.lower() for _, info in ranked)
             match = next((info["text"] for _, info in ranked
                           if info["text"].strip().lower() == gt.lower()), ranked_best)
             char_sim = difflib.SequenceMatcher(None, match.strip().lower(), gt.lower()).ratio()
             sem = semantic.get(match) if semantic else None
-            if sem is None:
+            use_score = blended.get(match) if blended else (sem[0] if sem else None)
+            if use_score is None:
                 classification = "EXACT" if exact else "?"
                 raw_out = None
             else:
-                score, raw = sem
-                raw_out = raw
+                raw_out = sem[1] if sem else None
                 classification = "EXACT" if exact else (
-                    "near-miss" if score >= semantic_threshold else "off-target")
-            results.append((red.get("id", "?"), gt, match, exact, sem[0] if sem else None, classification))
+                    "near-miss" if use_score >= semantic_threshold else "off-target")
+            results.append((red.get("id", "?"), gt, match, exact, use_score, classification))
             if exact:
                 verdict = "EXACT MATCH"
-            elif sem is not None:
-                verdict = f"{classification} (sc {sem[0]:.2f}, raw {raw_out:.2f})"
+            elif use_score is not None:
+                verdict = f"{classification} (sc {use_score:.2f}" + (
+                    f", raw {raw_out:.2f})" if raw_out is not None else ")")
             else:
                 verdict = "no exact match"
             print(f"  [result] {verdict} | best candidate: \"{match}\" "
@@ -540,8 +605,13 @@ def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold
             near = sum(1 for r in results if r[5] == "near-miss")
             off = sum(1 for r in results if r[5] == "off-target")
             print("=" * 70, file=out)
+            # With the prior active the summary scores are the blended finals
+            # (contrastive + prior), not raw contrastive -- label them honestly.
+            metric = ("mean best-candidate final score"
+                      if prior_weight > 0 and priors else
+                      "mean best-candidate contrastive score")
             print(f"GRADED RECOVERY: exact={exacts}  near-miss={near}  off-target={off}  "
-                  f"mean best-candidate contrastive score={sum(semis) / len(semis):.2f}", file=out)
+                  f"{metric}={sum(semis) / len(semis):.2f}", file=out)
 
 
 # ---------------------------------------------------------------------------
@@ -574,6 +644,16 @@ def main(argv=None):
     ap.add_argument("--full-pool", action="store_true",
                     help="Lift early-stop token caps: gather the full candidate "
                          "pool (FIM and chat) for eval/paper analysis")
+    ap.add_argument("--prior-weight", type=float, default=0.0,
+                    help="Blend a document-keyness prior into semantic scores: "
+                         "final = contrastive + prior_weight * prior(candidate) "
+                         "(default 0 = off; requires --semantic and a doc_context "
+                         "field in the redactions file)")
+    ap.add_argument("--echo-penalty", type=float, default=0.5,
+                    help="Points subtracted from the semantic score of any "
+                         "candidate that mostly reproduces words adjacent to the "
+                         "gap (the echo failure mode; default 0.5; 0 disables). "
+                         "Only applies with --semantic.")
     ap.add_argument("--dry-run", action="store_true",
                     help="Use the no-network 'echo' backend to test the pipeline")
     args = ap.parse_args(argv)
@@ -589,8 +669,24 @@ def main(argv=None):
         backend.mode = args.mode
         backend.full_pool = args.full_pool
 
-    scorer = SemanticScorer(args.semantic_control, args.semantic_window) if args.semantic else None
-    run(redactions, backend, args.candidates, scorer, args.semantic_threshold)
+    if args.prior_weight > 0 and not args.semantic:
+        print("warning: --prior-weight blends into semantic scores; pass --semantic "
+              "or the prior has no effect", file=sys.stderr)
+    priors = {}
+    if args.prior_weight > 0:
+        from keyness import KeynessPrior
+        for red in redactions:
+            ctx = red.get("doc_context", "")
+            if ctx and ctx not in priors:
+                priors[ctx] = KeynessPrior(ctx)
+        if not priors:
+            print("warning: --prior-weight given but no redaction has doc_context; "
+                  "the prior will have no effect", file=sys.stderr)
+
+    scorer = (SemanticScorer(args.semantic_control, args.semantic_window,
+                             args.echo_penalty) if args.semantic else None)
+    run(redactions, backend, args.candidates, scorer, args.semantic_threshold,
+        args.prior_weight, priors)
 
 
 if __name__ == "__main__":

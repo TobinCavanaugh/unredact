@@ -84,11 +84,63 @@ window sizes and token budgets (the generate half of generate-and-verify).
    **exact / near-miss / off-target** (threshold `--semantic-threshold`,
    default 0.7) and a graded recovery summary is printed.
 
+   **Adjacency-echo guard (on by default, `--echo-penalty`):** the contrastive
+   anchor cannot punish a candidate that simply reproduces a word sitting
+   right next to the gap -- an echoed word is always closer to the GT slot
+   than a nonsense control. So any candidate that is mostly composed of
+   adjacent-window words (the "Indian"/"Chinese" failure mode, where the
+   model copies the first word of the after-text) gets `echo_penalty` (default
+   0.5) subtracted from its score, and echoed candidates also receive **no
+   keyness-prior credit** (so the prior can't re-boost an echo). Verified
+   against the test set: none of the ground truths appear in their adjacent
+   window (each was redacted *out* of it), so the guard never touches a
+   correct answer. Disable with `--echo-penalty 0`.
+
    No API key yet? Test the whole pipeline offline:
 
    ```
    python unredact.py --dry-run
    ```
+
+## Keyness prior (document bias in ranking)
+
+The pipeline is generate -> verify (char range) -> score (contrastive
+semantic embedding). A **document-keyness prior** adds a third, independent
+term to that scorer so candidate ranking is biased toward what this document
+is *about* -- and away from what it is *saturated with*:
+
+```
+final_score = semantic_contrastive + prior_weight * keyness_prior(candidate)
+```
+
+The prior is **two-sided** (see APPROACH.md for the design discussion):
+
+- **Positive** weight on the document's thematic terms and entity shortlist
+  (words whose frequency is anomalously high relative to general English --
+  `missile`, `IRBM`, `India`, `China` -- computed with a small embedded
+  frequency table; no external dependency).
+- **Negative** weight on the document's own dominant entities (the *salience
+  trap*: the Pakistan box returned "Pakistan" because that token saturates
+  the context).
+
+It never filters or corrupts generation -- it only nudges selection, so the
+common-word ground truths ("active", "large") are untouched.
+
+```
+# A/B against the baseline (baseline = same command without --prior-weight):
+python unredact.py --backend mercury --mode fim --semantic --prior-weight 0.5
+```
+
+Note: with `--prior-weight` active, the `GRADED RECOVERY` summary reports the
+**blended final score** (contrastive + prior), which can exceed 1.0 -- it is
+labeled "mean best-candidate final score" in that case, not raw contrastive.
+
+Requirements: `--semantic` (the prior blends into semantic scores) and a
+`doc_context` field in `redactions.json` holding the full document text the
+redaction comes from (whole-document *statistics* only -- generation stays
+windowed, since FIM chokes on long context). Tune the blend with
+`--prior-weight` (try 0.3-0.5; 0 = off) and see what the extractor found in
+the `[keyness]` line per redaction.
 
 ## Token usage (Mercury free tier)
 
