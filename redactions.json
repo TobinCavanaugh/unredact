@@ -1,5 +1,5 @@
 {
-  "_comment": "Test set for the unredaction MVP (pure-text mode). Each entry: 'before'/'after' = the FULL document context split exactly at the redaction gap (more context = much better recovery); 'doc_context' = the full document text the redaction comes from (used by the keyness prior -- whole-document statistics only, generation stays windowed); 'min_chars'/'max_chars' = how many characters fit in the box (derive with box_measure.py from box width + font size; the ground-truth length falls inside); 'ground_truth' = the original redacted text, used to score results. Source: known-good sample paragraph (India ballistic missile program). Numbers and locations deliberately left unredacted.",
+  "_comment": "Six-case test set for the unredaction MVP (pure-text mode). Each entry: 'before'/'after' = the FULL document context split exactly at the redaction gap (more context = much better recovery); 'doc_context' = the full document text the redaction comes from (used by the keyness prior -- whole-document statistics only, generation stays windowed); 'min_chars'/'max_chars' = how many characters fit in the box (derive with box_measure.py from box width + font size; the ground-truth length falls inside); 'ground_truth' = the original redacted text, used to score results. Source: known-good sample paragraph (India ballistic missile program). Numbers and locations deliberately left unredacted.",
   "redactions": [
     {
       "id": "ind1_active",
@@ -54,16 +54,6 @@
       "min_chars": 8,
       "max_chars": 12,
       "ground_truth": "industrial"
-    },
-    {
-      "id": "pak1_israel",
-      "before": "The Pakistanis are believed to have a very strong motivation to acquire a ballistic missile system, primarily for use against targets in India. Pakistan's technology and industrial capability are inadequate to develop a missile system on its own. Massive assistance or purchase of a complete missile system from an outside source would be required. The only countries from which such assistance appears possible are",
-      "after": "and China. with China being the more likely. Pakistan would probably prefer an IRBM, but they could have use for a shorter-range tactical ballistic missile",
-      "doc_context": "The Pakistanis are believed to have a very strong motivation to acquire a ballistic missile system, primarily for use against targets in India. Pakistan's technology and industrial capability are inadequate to develop a missile system on its own. Massive assistance or purchase of a complete missile system from an outside source would be required. The only countries from which such assistance appears possible are and China. with China being the more likely. Pakistan would probably prefer an IRBM, but they could have use for a shorter-range tactical ballistic missile",
-      "min_chars": 5,
-      "max_chars": 8,
-      "ground_truth": "Israel",
-      "note": "True redaction from a Pakistan missile-intent passage; ground_truth 'Israel' is the user's guess from historical context (outside this excerpt) -- more document context may be needed."
     }
   ]
 }

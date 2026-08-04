@@ -1,0 +1,98 @@
+======================================================================
+redaction: ind1_active  chars [4, 8]
+  ground truth: "active"
+  [blind] best candidate: "active" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=6  == GT  |active|
+  [FIT ] chars=7  |active，|
+  [    ] chars=2  (char range!)  |‪‬|
+  [    ] chars=1  (char range!)  |1|
+  [    ] chars=12  (char range!)  |agreed Sino-|
+  [    ] chars=14  (char range!)  |ongoing India-|
+  [    ] chars=19  (char range!)  |organized Pakistan-|
+  [result] EXACT MATCH | best candidate: "active" | char-sim to GT: 100%
+======================================================================
+redaction: ind2_deterrent  chars [7, 11]
+  ground truth: "deterrent"
+  [blind] best candidate: "deterrent" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=9  == GT  |deterrent|
+  [FIT ] chars=11  |deterrent ̇|
+  [    ] chars=15  (char range!)  |deterrent-NGOL-|
+  [    ] chars=16  (char range!)  |deterrent weapon|
+  [    ] chars=16  (char range!)  |counter-strategy|
+  [    ] chars=17  (char range!)  |"major deterrent"|
+  [    ] chars=18  (char range!)  |deterrent underthe|
+  [    ] chars=38  (char range!)  |indigenous nuclear deterrent this time|
+  [result] EXACT MATCH | best candidate: "deterrent" | char-sim to GT: 100%
+======================================================================
+redaction: ind3_potential  chars [7, 11]
+  ground truth: "potential"
+  [blind] best candidate: "<BLAN>" (not exact); candidate_recall@K=miss
+  [    ] chars=6  (char range!)  |<BLAN>|
+  [    ] chars=5  (char range!)  |<lik>|
+  [    ] chars=5  (char range!)  |redem|
+  [    ] chars=15  (char range!)  |perceived Sino–|
+  [    ] chars=17  (char range!)  |possibility of ​​|
+  [    ] chars=22  (char range!)  |existing Soviet Union/|
+  [    ] chars=22  (char range!)  |increasing danger of a|
+  [    ] chars=29  (char range!)  |increasingly serious Kremlin/|
+  [result] no exact match | best candidate: "<BLAN>" | char-sim to GT: 13%
+======================================================================
+redaction: ind4_northern  chars [6, 10]
+  ground truth: "northern"
+  [blind] best candidate: "northern" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=8  == GT  |northern|
+  [FIT ] chars=7  |eastern|
+  [    ] chars=5  (char range!)  |north|
+  [    ] chars=12  (char range!)  |northeastern|
+  [    ] chars=16  (char range!)  |north'eastern) (|
+  [    ] chars=17  (char range!)  |northern highland|
+  [    ] chars=18  (char range!)  |easternmost border|
+  [result] EXACT MATCH | best candidate: "northern" | char-sim to GT: 100%
+======================================================================
+redaction: ind5_large  chars [3, 7]
+  ground truth: "large"
+  [blind] best candidate: "major" (not exact); candidate_recall@K=hit
+  [FIT ] chars=5  |major|
+  [FIT ] chars=5  == GT  |large|
+  [FIT ] chars=4  |high|
+  [    ] chars=11  (char range!)  |substantial|
+  [result] EXACT MATCH | best candidate: "large" | char-sim to GT: 100%
+======================================================================
+redaction: ind6_industrial  chars [8, 12]
+  ground truth: "industrial"
+  [blind] best candidate: "industrial" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=10  == GT  |industrial|
+  [FIT ] chars=11  |qakistan查克拉|
+  [    ] chars=16  (char range!)  |its industrial |
+  [    ] chars=1  (char range!)  |৹|
+  [    ] chars=23  (char range!)  |of the major population|
+  [    ] chars=27  (char range!)  |the populous industrial sub|
+  [    ] chars=30  (char range!)  |of its strategic geographical‬|
+  [result] EXACT MATCH | best candidate: "industrial" | char-sim to GT: 100%
+======================================================================
+redaction: pak1_israel  chars [5, 8]
+  note: True redaction from a Pakistan missile-intent passage; ground_truth 'Israel' is the user's guess from historical context (outside this excerpt) -- more document context may be needed.
+  ground truth: "Israel"
+  [blind] best candidate: ". Russia" (not exact); candidate_recall@K=miss
+  [FIT ] chars=8  |. Russia|
+  [FIT ] chars=8  |the USSR|
+  [    ] chars=9  (char range!)  |the U.S.,|
+  [    ] chars=10  (char range!)  |the USSR '|
+  [    ] chars=11  (char range!)  |North Korea|
+  [    ] chars=17  (char range!)  |the United States|
+  [    ] chars=20  (char range!)  |the United States ​​|
+  [result] no exact match | best candidate: ". Russia" | char-sim to GT: 29%
+======================================================================
+ORACLE DIAGNOSTIC (uses ground truth; not blind performance)
+  ind1_active: GT "active" -> best "active" (EXACT)
+  ind2_deterrent: GT "deterrent" -> best "deterrent" (EXACT)
+  ind3_potential: GT "potential" -> best "<BLAN>" (?)
+  ind4_northern: GT "northern" -> best "northern" (EXACT)
+  ind5_large: GT "large" -> best "large" (EXACT)
+  ind6_industrial: GT "industrial" -> best "industrial" (EXACT)
+  pak1_israel: GT "Israel" -> best ". Russia" (?)
+======================================================================
+BLIND BASELINE: exact=4/7  candidate_recall@K=5/7  (selection uses char range + generator order only)
+  paper_type=untyped: blind_exact=4/7  candidate_recall@K=5/7
+GENERATION DIAGNOSTICS (truncated responses are discarded)
+  api_attempts=56  http_responses=56  truncated=0  fim_truncated=0  chat_truncated=0  empty_responses=0  artifact_filtered=7  replacement_char_artifacts=0  html_entity_candidates=0  continuation_candidates=1  usable_candidates=48  fim_usable=0  chat_usable=0  fallback_chat=0  fim_requested_budget_min=None  fim_requested_budget_max=None  fim_requested_budget_mean=None

@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata."
+title: "Unredact: length-constrained infilling of redacted text with diffusion language models"
+type: software
+authors:
+  - family-names: Cavanaugh
+    given-names: Tobin
+    email: "tobincavanaugh@gmail.com"
+version: "0.1.0"
+date-released: 2026-08-04
+license: MIT
+keywords:
+  - redaction recovery
+  - diffusion language models
+  - masked infilling
+  - document analysis
+abstract: >-
+  A text-only proof of concept for recovering short redacted spans from visible
+  context and approximate monospace box-length constraints. The repository
+  includes a Mercury backend, a local LLaDA backend, synthetic evaluation data,
+  and reproducible evaluation logs.

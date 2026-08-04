@@ -69,11 +69,12 @@ window sizes and token budgets (the generate half of generate-and-verify).
    python unredact.py --backend mercury --mode chat --semantic
    ```
 
-   `--semantic` computes a **contrastive slot score** using `all-MiniLM-L6-v2`:
-   it embeds `before + candidate + after` vs `before + ground_truth + after`
-   and reports how much closer the candidate is to the ground truth than a
-   control token is (raw cosine is dominated by shared context, so the
-   control-anchored score is what discriminates). Embeddings use a **local
+   `--semantic` computes an **oracle diagnostic contrastive slot score** using
+   `all-MiniLM-L6-v2`: it embeds `before + candidate + after` vs
+   `before + ground_truth + after` and reports how much closer the candidate is
+   to the ground truth than a control token is. This is useful for analyzing
+   ranking quality, but it uses the answer and is not blind deployment
+   performance. Embeddings use a **local
    window around the slot** (last/first `--semantic-window` words, default 8)
    so the shared context doesn't saturate the cosine; char-range verification
    still uses the full context. Scores run 1.0 (identical to GT) down to 0.0
@@ -102,6 +103,98 @@ window sizes and token budgets (the generate half of generate-and-verify).
    python unredact.py --dry-run
    ```
 
+## Local LLaDA backend
+
+The native masked-diffusion LLaDA server runs on a GPU machine while this
+repository remains the evaluator. The server is a small unauthenticated HTTP
+service, so keep it on a trusted private network and do not port-forward it to
+the public internet.
+
+### Start the server
+
+On the GPU machine, install the server dependencies and a CUDA-enabled PyTorch
+build, then start the server. The default binds to all interfaces on port 8000
+so another machine on the LAN can reach it:
+
+```bash
+python -m pip install -r llada_server_requirements.txt
+# Install the CUDA-enabled PyTorch build appropriate for your machine separately.
+python llada_server.py --model GSAI-ML/LLaDA-8B-Base --host 0.0.0.0 --port 8000
+```
+
+The server exposes:
+
+- `GET /health` — readiness and model/device information.
+- `POST /generate` — visible `before`/`after` text plus character bounds and
+  sampling settings; returns a list of candidate strings and diagnostics.
+
+It never receives `ground_truth`, document IDs, paper taxonomy, or evaluator
+metadata. Returned candidates still require client-side character-range
+verification.
+
+### Run the evaluator
+
+On the evaluator machine, use the server's reachable host and port. For a
+server on the same machine, the default is `127.0.0.1:8000`; for a GPU desktop
+on the LAN, replace the host with that machine's private IP:
+
+```bat
+set LLADA_HOST=GPU-DESKTOP-IP
+set LLADA_PORT=8000
+run_llada_tests.bat redactions.json llada_low low_confidence
+```
+
+The batch runner accepts the following arguments:
+
+```text
+run_llada_tests.bat [redactions] [tag] [remasking] [host] [port]
+```
+
+Environment variables are also supported:
+
+```bat
+set LLADA_URL=http://gpu-desktop.example:8000
+run_llada_tests.bat redactions.json llada_random random
+```
+
+`LLADA_URL` takes precedence over `LLADA_HOST` and `LLADA_PORT`. The runner
+checks `/health`, sends a tiny `/generate` smoke request, then executes eight
+serial 64-step candidate requests and logs the result. Use `low_confidence` or
+`random` for the remasking strategy.
+
+To invoke the evaluator directly:
+
+```bash
+python unredact.py --backend llada \--llada-host GPU-DESKTOP-IP --llada-port 8000
+ \
+  --llada-steps 64 --llada-temperature 0.8 \
+  --llada-remasking low_confidence --candidates 8 \
+  --redactions redactions.json
+```
+
+Or provide the complete endpoint URL:
+
+```bash
+python unredact.py --backend llada --llada-url http://127.0.0.1:8000 \
+  --llada-steps 64 --llada-temperature 0.8 \
+  --llada-remasking low_confidence --candidates 8 \
+  --redactions redactions.json
+```
+
+Useful validation commands, which do not require the LLaDA server, are:
+
+```bash
+python validate_dataset.py
+python data/synthetic_v2/validate.py
+python unredact.py --dry-run --redactions redactions.json
+typst compile index.typ index.pdf
+```
+
+`--llada-steps` defaults to 64 and the client derives nearby token-span
+requests from each redaction's character upper bound. LLaDA generates a fixed
+token span rather than stopping at a character boundary, so all candidates are
+filtered locally against the authoritative character range.
+
 ## Keyness prior (document bias in ranking)
 
 The pipeline is generate -> verify (char range) -> score (contrastive
@@ -113,15 +206,14 @@ is *about* -- and away from what it is *saturated with*:
 final_score = semantic_contrastive + prior_weight * keyness_prior(candidate)
 ```
 
-The prior is **two-sided** (see APPROACH.md for the design discussion):
+The prior is **two-sided**: it rewards thematic terms while penalizing
+entities that dominate the document, reducing the salience-trap failure mode.
 
 - **Positive** weight on the document's thematic terms and entity shortlist
   (words whose frequency is anomalously high relative to general English --
   `missile`, `IRBM`, `India`, `China` -- computed with a small embedded
   frequency table; no external dependency).
-- **Negative** weight on the document's own dominant entities (the *salience
-  trap*: the Pakistan box returned "Pakistan" because that token saturates
-  the context).
+- **Negative** weight on the document's own dominant entities  (the *salience trap*: an earlier Pakistan/Israel case exposed how a saturated entity can dominate the context; that case is excluded from the active six-case benchmark).
 
 It never filters or corrupts generation -- it only nudges selection, so the
 common-word ground truths ("active", "large") are untouched.
@@ -142,6 +234,61 @@ windowed, since FIM chokes on long context). Tune the blend with
 `--prior-weight` (try 0.3-0.5; 0 = off) and see what the extractor found in
 the `[keyness]` line per redaction.
 
+## Constraint-tightness ablation (does the leaked length do work?)
+
+The whole pipeline leans on the box's leaked char range `[min_chars, max_chars]`.
+This ablation quantifies how much of the recovery actually comes from that
+leak -- the data for the "constraint-tightness vs accuracy" chart.
+
+- **`--loosen <delta>`** -- the full-pipeline version: widen every box by
+  `delta` characters on **both** sides (`[min-delta, max+delta]`) before
+  generation *and* verification (chat length hints loosen too). Run it at
+  several deltas and watch recovery fall:
+
+  ```
+  python unredact.py --redactions redactions_broad.json --backend mercury \
+    --semantic --prior-weight 0.5 --loosen 3
+  ```
+
+- **`--tightness-sweep 0,3,5,10`** -- the selection-stage version: generates
+  ONE candidate pool per redaction (at the tight bounds), then re-verifies,
+  re-ranks and re-grades that same pool at every widening. Zero extra API
+  calls, deterministic, and it isolates exactly what the length constraint
+  contributes at selection. Prints a `COMPARISON: recovery vs looseness`
+  table at the end:
+
+  ```
+  python unredact.py --redactions redactions_broad.json --backend mercury \
+    --semantic --prior-weight 0.5 --tightness-sweep 0,3,5,10
+  ```
+
+**What the data says (logged runs, broad set):** the pool-reuse sweep is
+*flat* -- recovery does not fall as the bounds loosen. Because generation is
+already length-conditioned and the semantic scorer ranks the right fill first,
+widening the eligible set barely moves recovery. The leaked length's real
+contribution is at **generation**, not selection. The decisive comparison is
+chat mode with vs without the length hint:
+
+  ```
+  # Plain-LLM baseline: no leaked length in the prompt.
+  python log_run.py no_len_hint --redactions redactions_broad.json \
+    --backend mercury --mode chat --semantic --no-length-hint
+  ```
+
+## Evaluation logging (track improvement over time)
+
+Every run can be logged as a full text log + a graphable sidecar:
+
+  ```
+  python log_run.py <tag> [unredact.py args...]
+  ```
+
+Writes into `logs/`: `<ts>_<tag>.txt` (full text), `<ts>_<tag>.json`
+(structured sidecar: per-redaction rows incl. `control_sim` difficulty proxy +
+summary), and `runs.csv` (one row per run -- the improvement-progress file).
+See `logs/README.md`. The sidecar is produced by unredact.py's
+`--json-results` flag, so any run can be logged, not just via the wrapper.
+
 ## Token usage (Mercury free tier)
 
 FIM is the cheap path (~30 tokens/call); chat is ~7-10x more expensive
@@ -155,7 +302,7 @@ The pipeline already trims spend:
 - Chat requests use `reasoning: {"effort": "low"}`, which cuts reasoning
   tokens roughly in half (~140 -> ~65) with no quality loss measured.
 
-A full 7-box run with `--candidates 6` typically costs ~2-4k tokens. Tune
+A full 6-box run with `--candidates 6` typically costs ~2-4k tokens. Tune
 spend with `--candidates` (FIM calls per box). Pass `--full-pool` on eval
 runs to lift the early-stop caps and gather the whole candidate pool for
 paper analysis (at higher token cost).
@@ -182,7 +329,7 @@ It prints the estimate plus the `min_chars`/`max_chars` snippet to paste into
 |-----------|---------|----------------------------------------------|
 | mercury   | working | FIM (diffusion-native infill) or chat mode   |
 | echo      | working | dummy candidates for offline pipeline tests  |
-| llada     | stub    | local LLaDA-8B later (needs torch/transformers) |
+| llada     | working | local LLaDA masked-infill HTTP server |
 | openai    | stub    |                                              |
 | anthropic | stub    |                                              |
 

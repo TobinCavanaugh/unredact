@@ -1,0 +1,57 @@
+{
+  "schema": "unredact-synthetic-v2-manifest",
+  "taxonomy_source": "index.typ",
+  "documents": {
+    "arctic_shipping": {
+      "split": "test",
+      "path": "docs\\test\\arctic_shipping.txt",
+      "spans": 5
+    },
+    "china_policy": {
+      "split": "train",
+      "path": "docs\\train\\china_policy.txt",
+      "spans": 5
+    },
+    "dprk_program": {
+      "split": "train",
+      "path": "docs\\train\\dprk_program.txt",
+      "spans": 4
+    },
+    "gulf_supply": {
+      "split": "train",
+      "path": "docs\\train\\gulf_supply.txt",
+      "spans": 5
+    },
+    "south_asia_assessment": {
+      "split": "test",
+      "path": "docs\\test\\south_asia_assessment.txt",
+      "spans": 5
+    },
+    "soviet_briefing": {
+      "split": "train",
+      "path": "docs\\train\\soviet_briefing.txt",
+      "spans": 5
+    }
+  },
+  "counts": {
+    "train": 19,
+    "test": 10
+  },
+  "paper_types": {
+    "1": {
+      "name": "juxtaposition_coreference",
+      "label": "Juxtaposition / coreference",
+      "evidence_mode": "verbatim_elsewhere"
+    },
+    "2": {
+      "name": "total_expungement",
+      "label": "Total expungement",
+      "evidence_mode": "absent_unconstrained"
+    },
+    "3": {
+      "name": "constrained_situational",
+      "label": "Constrained / situational",
+      "evidence_mode": "document_entailment"
+    }
+  }
+}

@@ -1,0 +1,77 @@
+======================================================================
+redaction: ind1_active  chars [4, 8]
+  ground truth: "active"
+  [blind] best candidate: "active" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=6  == GT  |active|
+  [FIT ] chars=5  |Sino-|
+  [FIT ] chars=8  |active‎‡|
+  [result] EXACT MATCH | best candidate: "active" | char-sim to GT: 100%
+======================================================================
+redaction: ind2_deterrent  chars [7, 11]
+  ground truth: "deterrent"
+  [blind] best candidate: "deterrent" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=9  == GT  |deterrent|
+  [    ] chars=18  (char range!)  |credible deterrent|
+  [    ] chars=19  (char range!)  |strategic deterrent|
+  [    ] chars=22  (char range!)  |first strike deterrent|
+  [result] EXACT MATCH | best candidate: "deterrent" | char-sim to GT: 100%
+======================================================================
+redaction: ind3_potential  chars [7, 11]
+  ground truth: "potential"
+  [blind] best candidate: "modern" (not exact); candidate_recall@K=miss
+  [    ] chars=6  (char range!)  |modern|
+  [    ] chars=5  (char range!)  |Sino-|
+  [    ] chars=4  (char range!)  |Sino|
+  [    ] chars=3  (char range!)  |(1)|
+  [    ] chars=15  (char range!)  |potential U.S.-|
+  [    ] chars=16  (char range!)  |mainland Soviet/|
+  [result] no exact match | best candidate: "modern" | char-sim to GT: 40%
+======================================================================
+redaction: ind4_northern  chars [6, 10]
+  ground truth: "northern"
+  [blind] best candidate: "northeast" (not exact); candidate_recall@K=miss
+  [FIT ] chars=9  |northeast|
+  [    ] chars=12  (char range!)  |northwestern|
+  [    ] chars=12  (char range!)  |northeastern|
+  [    ] chars=3  (char range!)  |```|
+  [result] no exact match | best candidate: "northeast" | char-sim to GT: 71%
+======================================================================
+redaction: ind5_large  chars [3, 7]
+  ground truth: "large"
+  [blind] best candidate: "large" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=5  == GT  |large|
+  [    ] chars=10  (char range!)  |very large|
+  [result] EXACT MATCH | best candidate: "large" | char-sim to GT: 100%
+======================================================================
+redaction: ind6_industrial  chars [8, 12]
+  ground truth: "industrial"
+  [blind] best candidate: "industrial ْ" (not exact); candidate_recall@K=miss
+  [FIT ] chars=12  |industrial ْ|
+  [FIT ] chars=8  |military|
+  [    ] chars=14  (char range!)  |its industrial|
+  [    ] chars=16  (char range!)  |of its strategic|
+  [    ] chars=28  (char range!)  |most of its major industrial|
+  [    ] chars=29  (char range!)  |industrial and military Super|
+  [result] no exact match | best candidate: "industrial ْ" | char-sim to GT: 91%
+======================================================================
+redaction: pak1_israel  chars [5, 8]
+  note: True redaction from a Pakistan missile-intent passage; ground_truth 'Israel' is the user's guess from historical context (outside this excerpt) -- more document context may be needed.
+  ground truth: "Israel"
+  [blind] best candidate: "the USSR" (not exact); candidate_recall@K=miss
+  [FIT ] chars=8  |the USSR|
+  [    ] chars=16  (char range!)  |the Soviet Union|
+  [result] no exact match | best candidate: "the USSR" | char-sim to GT: 29%
+======================================================================
+ORACLE DIAGNOSTIC (uses ground truth; not blind performance)
+  ind1_active: GT "active" -> best "active" (EXACT)
+  ind2_deterrent: GT "deterrent" -> best "deterrent" (EXACT)
+  ind3_potential: GT "potential" -> best "modern" (?)
+  ind4_northern: GT "northern" -> best "northeast" (?)
+  ind5_large: GT "large" -> best "large" (EXACT)
+  ind6_industrial: GT "industrial" -> best "industrial ْ" (?)
+  pak1_israel: GT "Israel" -> best "the USSR" (?)
+======================================================================
+BLIND BASELINE: exact=3/7  candidate_recall@K=3/7  (selection uses char range + generator order only)
+  paper_type=untyped: blind_exact=3/7  candidate_recall@K=3/7
+GENERATION DIAGNOSTICS (truncated responses are discarded)
+  api_attempts=42  http_responses=42  truncated=0  fim_truncated=0  chat_truncated=0  empty_responses=0  artifact_filtered=14  replacement_char_artifacts=0  html_entity_candidates=1  continuation_candidates=1  usable_candidates=27  fim_usable=0  chat_usable=0  fallback_chat=0  fim_requested_budget_min=None  fim_requested_budget_max=None  fim_requested_budget_mean=None

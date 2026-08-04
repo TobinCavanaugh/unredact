@@ -8,7 +8,7 @@ ranking in unredact.py:
 
     final_score = semantic_contrastive + prior_weight * keyness_prior(candidate)
 
-Two-sided by design (see APPROACH.md section 2.2):
+Two-sided by design:
 
   + positive weight on the document's thematic terms / entity shortlist
   - negative weight on the document's OWN dominant entities (the salience
