@@ -272,4 +272,8 @@ This project presents a small generate-and-verify pipeline for text-only redacti
 
 The most promising scope is short Type 1 and Type 2 redactions with strong surrounding context. Type 3 redactions, whose answers are absent from the document, require external evidence and should be treated as a different task. Future work should focus on better box measurement, realistic simulated-redaction datasets, repeated-run statistics, blind reranking, and semantic evaluation—not on presenting the current numbers as general recovery performance.
 
+= Acknowledgments
+
+This research and codebase were developed with assistance from DeepSeek V4 and Gemini 3.7 Flash.
+
 #bibliography("refs.bib", title: [References])

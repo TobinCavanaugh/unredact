@@ -84,3 +84,10 @@ Compile the Typst paper to PDF:
 ```bash
 typst compile index.typ index.pdf
 ```
+
+---
+
+## Acknowledgments
+
+This project was developed with assistance from DeepSeek V4 and Gemini 3.7 Flash.
+
