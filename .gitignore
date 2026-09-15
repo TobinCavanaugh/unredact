@@ -12,6 +12,3 @@ notes.txt
 
 # Scratch / tmp files
 tmp_*.txt
-
-# Build artifacts
-index.pdf

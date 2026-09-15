@@ -1,0 +1,10 @@
+# tag	mode	exact	near	off	mean	metric
+baseline-sem	fim	5	2	14	0.528	mean best-candidate contrastive score
+chat	chat	4	1	16	0.465	mean best-candidate contrastive score
+echo-off	fim	5	2	14	0.552	mean best-candidate contrastive score
+no-len-hint	chat	4	1	16	0.431	mean best-candidate contrastive score
+prior05	fim	4	4	13	0.554	mean best-candidate final score
+synthetic-v2-baseline	fim	2	0	0		mean best-candidate contrastive score
+synthetic-v2-chat-only	chat	4	0	0		mean best-candidate contrastive score
+synthetic-v2-fim-tight	fim	0	0	0		mean best-candidate contrastive score
+synthetic-v2-truncation-filtered	fim	2	0	0		mean best-candidate contrastive score

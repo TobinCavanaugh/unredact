@@ -1,0 +1,161 @@
+  [mercury] FIM pooled 2 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+======================================================================
+TIGHTNESS SWEEP: recovery vs constraint looseness (deltas = 0, 3, 5, 10 chars each side)
+One candidate pool per redaction (generated at the tight bounds) is re-verified at every delta -- isolates the selection-stage effect of the length leak; zero extra API calls.
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 103/103 [00:00<00:00, 7955.31it/s]
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] FIM pooled 2 usable candidate(s) (wanted 6, 2 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] FIM pooled 2 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] candidate truncated by max_tokens budget (accepted)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 3 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [keyness] top terms: soviet(1.00), based(0.85), union(0.72), sea(0.57), submarines(0.57), assess(0.57), now(0.57), missile(0.49), united(0.43), states(0.43), yankee(0.43), construction(0.43), severodvinsk(0.43), delta(0.43), iii(0.43) | entities: Construction, Delta, III, SS, Severodvinsk, Soviet, States, Union, United, Yankee | dominant: Soviet, Union
+  [keyness] top terms: forces(1.00), strategic(0.55), china(0.47), df(0.47), united(0.47), states(0.47), peking(0.47), chinese(0.47), has(0.40), continued(0.33), modernize(0.33), though(0.33), slower(0.33), pace(0.33), than(0.33) | entities: China, Chinese, DF, Peking, States, United | dominant: (none)
+  [keyness] top terms: gulf(1.00), oil(0.82), exports(0.82), within(0.82), crude(0.59), persian(0.59), europe(0.59), japan(0.59), ras(0.59), tanura(0.59), saudi(0.59), arabia(0.59), strait(0.59), hormuz(0.59), alternative(0.59) | entities: Alternative, Arabia, Crude, Europe, Gulf, Hormuz, Japan, Persian, Ras, Red, Saudi, Sea, Strait, Tanura, Turkey | dominant: Gulf
+  [keyness] top terms: weapons(1.00), range(0.74), democratic(0.70), people's(0.70), republic(0.70), korea(0.70), nodong(0.70), iran(0.70), we(0.60), continues(0.50), pursue(0.50), despite(0.50), repeated(0.50), international(0.50), sanctions(0.50) | entities: Democratic, Iran, Korea, Nodong, People, Republic | dominant: (none)
+  [keyness] top terms: weapons(1.00), range(0.74), democratic(0.69), people's(0.69), republic(0.69), korea(0.69), nodong(0.69), we(0.60), continues(0.50), pursue(0.50), despite(0.50), repeated(0.50), international(0.50), sanctions(0.50), assess(0.50) | entities: Democratic, Korea, Nodong, People, Republic | dominant: (none)
+----------------------------------------------------------------------
+delta=0: bounds widened by 0 chars each side ([min-0, max+0])
+  sov1_triad           off-target   |mission|  sc=0.48
+  sov2_sea_based       off-target   |nuclear|  sc=0.42
+  sov3_patrol          near-miss    |duty|  sc=0.71
+  sov4_expanded        off-target   |completed|  sc=0.68
+  sov5_hardened_missile_silos off-target   |any target on Earth|  sc=0.52
+  chi1_solid_propellant_successor off-target   |new generation of missiles|  sc=0.22
+  chi2_no_first_use    EXACT        |no first use|  sc=1.09
+  chi3_retaliation     off-target   |deterrence|  sc=0.35
+  chi4_double          off-target   |increase|  sc=0.62
+  chi5_reentry_vehicles off-target   |units, or MCMs, will|  sc=-0.35
+  gulf1_strait_of_hormuz EXACT        |Strait of Hormuz|  sc=1.24
+  gulf2_terminal       EXACT        |terminal|  sc=1.20
+  gulf3_redundancy     off-target   |capacity|  sc=0.30
+  gulf4_strategic_petroleum_reserves near-miss    |combined oil reserves of|  sc=0.96
+  gulf5_exhausted      EXACT        |exhausted|  sc=1.20
+  dprk1_sanctions      off-target   |community|  sc=0.13
+  dprk2_fissile_material EXACT        |fissile material|  sc=1.25
+  dprk3_demonstrated   near-miss    |operational|  sc=0.75
+  dprk4_longer_range_delivery_vehicle off-target   |test of a medium-range missile|  sc=0.52
+  dprk5_uncertainty    off-target   |concerns the|  sc=0.05
+  dprk6_iran           off-target   |China|  sc=0.26
+  GRADED: exact=5  near-miss=3  off-target=13  mean=0.60
+----------------------------------------------------------------------
+delta=3: bounds widened by 3 chars each side ([min-3, max+3])
+  sov1_triad           off-target   |mission|  sc=0.48
+  sov2_sea_based       off-target   |nuclear|  sc=0.42
+  sov3_patrol          near-miss    |duty|  sc=0.71
+  sov4_expanded        off-target   |completed|  sc=0.68
+  sov5_hardened_missile_silos off-target   |any U.S. target,|  sc=0.52
+  chi1_solid_propellant_successor off-target   |new generation of missiles|  sc=0.22
+  chi2_no_first_use    EXACT        |no first use|  sc=1.09
+  chi3_retaliation     off-target   |deterrence|  sc=0.35
+  chi4_double          off-target   |increase|  sc=0.62
+  chi5_reentry_vehicles off-target   |units, or MCMs, will|  sc=-0.35
+  gulf1_strait_of_hormuz EXACT        |Strait of Hormuz|  sc=1.24
+  gulf2_terminal       EXACT        |terminal|  sc=1.20
+  gulf3_redundancy     off-target   |capacity|  sc=0.30
+  gulf4_strategic_petroleum_reserves near-miss    |combined oil reserves of|  sc=0.96
+  gulf5_exhausted      EXACT        |exhausted|  sc=1.20
+  dprk1_sanctions      off-target   |community|  sc=0.13
+  dprk2_fissile_material EXACT        |fissile material|  sc=1.25
+  dprk3_demonstrated   near-miss    |operational|  sc=0.75
+  dprk4_longer_range_delivery_vehicle off-target   |test of a medium-range missile|  sc=0.52
+  dprk5_uncertainty    off-target   |concerns|  sc=0.06
+  dprk6_iran           off-target   |China|  sc=0.26
+  GRADED: exact=5  near-miss=3  off-target=13  mean=0.60
+----------------------------------------------------------------------
+delta=5: bounds widened by 5 chars each side ([min-5, max+5])
+  sov1_triad           off-target   |mission|  sc=0.48
+  sov2_sea_based       off-target   |nuclear|  sc=0.42
+  sov3_patrol          near-miss    |duty|  sc=0.71
+  sov4_expanded        off-target   |completed|  sc=0.68
+  sov5_hardened_missile_silos off-target   |any U.S. target,|  sc=0.52
+  chi1_solid_propellant_successor off-target   |new generation of missiles|  sc=0.22
+  chi2_no_first_use    EXACT        |no first use|  sc=1.09
+  chi3_retaliation     off-target   |deterrence|  sc=0.35
+  chi4_double          off-target   |increase|  sc=0.62
+  chi5_reentry_vehicles off-target   |units, or MCMs, will|  sc=-0.35
+  gulf1_strait_of_hormuz EXACT        |Strait of Hormuz|  sc=1.24
+  gulf2_terminal       EXACT        |terminal|  sc=1.20
+  gulf3_redundancy     off-target   |capacity|  sc=0.30
+  gulf4_strategic_petroleum_reserves near-miss    |combined oil reserves of|  sc=0.96
+  gulf5_exhausted      EXACT        |exhausted|  sc=1.20
+  dprk1_sanctions      off-target   |community|  sc=0.13
+  dprk2_fissile_material EXACT        |fissile material|  sc=1.25
+  dprk3_demonstrated   near-miss    |operational|  sc=0.75
+  dprk4_longer_range_delivery_vehicle off-target   |test of a medium-range missile|  sc=0.52
+  dprk5_uncertainty    off-target   |here|  sc=0.43
+  dprk6_iran           off-target   |China|  sc=0.26
+  GRADED: exact=5  near-miss=3  off-target=13  mean=0.62
+----------------------------------------------------------------------
+delta=10: bounds widened by 10 chars each side ([min-10, max+10])
+  sov1_triad           off-target   |nuclear deterrent|  sc=0.54
+  sov2_sea_based       off-target   |nuclear|  sc=0.42
+  sov3_patrol          near-miss    |duty|  sc=0.71
+  sov4_expanded        off-target   |completed|  sc=0.68
+  sov5_hardened_missile_silos off-target   |any U.S. target,|  sc=0.52
+  chi1_solid_propellant_successor off-target   |new generation of missiles|  sc=0.22
+  chi2_no_first_use    EXACT        |no first use|  sc=1.09
+  chi3_retaliation     off-target   |deterrence|  sc=0.35
+  chi4_double          off-target   |increase|  sc=0.62
+  chi5_reentry_vehicles off-target   |units|  sc=0.28
+  gulf1_strait_of_hormuz EXACT        |Strait of Hormuz|  sc=1.24
+  gulf2_terminal       EXACT        |terminal|  sc=1.20
+  gulf3_redundancy     off-target   |capacity|  sc=0.30
+  gulf4_strategic_petroleum_reserves near-miss    |combined oil reserves of|  sc=0.96
+  gulf5_exhausted      EXACT        |exhausted|  sc=1.20
+  dprk1_sanctions      off-target   |warnings and sanctions|  sc=0.64
+  dprk2_fissile_material EXACT        |fissile material|  sc=1.25
+  dprk3_demonstrated   near-miss    |operational|  sc=0.75
+  dprk4_longer_range_delivery_vehicle off-target   |test of a medium-range missile|  sc=0.52
+  dprk5_uncertainty    off-target   |here|  sc=0.43
+  dprk6_iran           off-target   |China|  sc=0.26
+  GRADED: exact=5  near-miss=3  off-target=13  mean=0.68
+======================================================================
+COMPARISON: recovery vs looseness (chars added to each side)
+ DELTA  EXACT   NEAR    OFF  MEAN_FINAL
+     0      5      3     13        0.60
+     3      5      3     13        0.60
+     5      5      3     13        0.62
+    10      5      3     13        0.68
+If the length leak does real work, recovery falls as the bounds loosen.

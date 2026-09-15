@@ -1,0 +1,61 @@
+======================================================================
+redaction: ind1_active  chars [4, 8]
+  ground truth: "active"
+  [blind] best candidate: "active 
+Output:" (not exact); candidate_recall@K=miss
+  [    ] chars=15  (char range!)  |active 
+Output:|
+  [result] no exact match | best candidate: "active 
+Output:" | char-sim to GT: 57%
+======================================================================
+redaction: ind2_deterrent  chars [7, 11]
+  ground truth: "deterrent"
+  [blind] best candidate: "deterrent�preferably a nuclear deterrent�" (not exact); candidate_recall@K=miss
+  [    ] chars=41  (char range!)  |deterrent�preferably a nuclear deterrent�|
+  [result] no exact match | best candidate: "deterrent�preferably a nuclear deterrent�" | char-sim to GT: 36%
+======================================================================
+redaction: ind3_potential  chars [7, 11]
+  ground truth: "potential"
+  [blind] best candidate: "&nbsp;the&nbsp;potential&nbsp;" (not exact); candidate_recall@K=miss
+  [    ] chars=30  (char range!)  |&nbsp;the&nbsp;potential&nbsp;|
+  [result] no exact match | best candidate: "&nbsp;the&nbsp;potential&nbsp;" | char-sim to GT: 46%
+======================================================================
+redaction: ind4_northern  chars [6, 10]
+  ground truth: "northern"
+  [blind] best candidate: "Himalayas or in the northern" (not exact); candidate_recall@K=miss
+  [    ] chars=28  (char range!)  |Himalayas or in the northern|
+  [result] no exact match | best candidate: "Himalayas or in the northern" | char-sim to GT: 44%
+======================================================================
+redaction: ind5_large  chars [3, 7]
+  ground truth: "large"
+  [blind] best candidate: "region that contains a large" (not exact); candidate_recall@K=miss
+  [    ] chars=28  (char range!)  |region that contains a large|
+  [result] no exact match | best candidate: "region that contains a large" | char-sim to GT: 30%
+======================================================================
+redaction: ind6_industrial  chars [8, 12]
+  ground truth: "industrial"
+  [blind] best candidate: "of most of its major industrial and military" (not exact); candidate_recall@K=miss
+  [    ] chars=44  (char range!)  |of most of its major industrial and military|
+  [result] no exact match | best candidate: "of most of its major industrial and military" | char-sim to GT: 37%
+======================================================================
+redaction: pak1_israel  chars [5, 8]
+  note: True redaction from a Pakistan missile-intent passage; ground_truth 'Israel' is the user's guess from historical context (outside this excerpt) -- more document context may be needed.
+  ground truth: "Israel"
+  [blind] best candidate: "the Soviet Union, France," (not exact); candidate_recall@K=miss
+  [    ] chars=25  (char range!)  |the Soviet Union, France,|
+  [result] no exact match | best candidate: "the Soviet Union, France," | char-sim to GT: 26%
+======================================================================
+ORACLE DIAGNOSTIC (uses ground truth; not blind performance)
+  ind1_active: GT "active" -> best "active 
+Output:" (?)
+  ind2_deterrent: GT "deterrent" -> best "deterrent�preferably a nuclear deterrent�" (?)
+  ind3_potential: GT "potential" -> best "&nbsp;the&nbsp;potential&nbsp;" (?)
+  ind4_northern: GT "northern" -> best "Himalayas or in the northern" (?)
+  ind5_large: GT "large" -> best "region that contains a large" (?)
+  ind6_industrial: GT "industrial" -> best "of most of its major industrial and military" (?)
+  pak1_israel: GT "Israel" -> best "the Soviet Union, France," (?)
+======================================================================
+BLIND BASELINE: exact=0/7  candidate_recall@K=0/7  (selection uses char range + generator order only)
+  paper_type=untyped: blind_exact=0/7  candidate_recall@K=0/7
+GENERATION DIAGNOSTICS (truncated responses are discarded)
+  api_attempts=7  http_responses=7  truncated=0  fim_truncated=0  chat_truncated=0  empty_responses=0  artifact_filtered=0  usable_candidates=7  fim_usable=0  chat_usable=0  fallback_chat=0  fim_requested_budget_min=None  fim_requested_budget_max=None  fim_requested_budget_mean=None

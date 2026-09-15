@@ -1,0 +1,92 @@
+======================================================================
+redaction: ind1_active  chars [4, 8]
+  ground truth: "active"
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 103/103 [00:00<00:00, 8821.82it/s]
+  [semantic] control_sim=0.92 (anchor for contrastive scores)
+  [FIT ] chars=6  cos=0.91 sc=-0.06  |WWWWWW|
+  [FIT ] chars=4  cos=0.93 sc=0.19  |WWWW|
+  [FIT ] chars=8  cos=0.93 sc=0.20  |WWWWWWWW|
+  [    ] chars=2  (char range!)  cos=0.96 sc=0.55  |WW|
+  [    ] chars=10  (char range!)  cos=0.94 sc=0.32  |WWWWWWWWWW|
+  [    ] chars=2  (char range!)  cos=0.96 sc=0.55  |WW|
+  [result] off-target (sc 0.20, raw 0.93) | best candidate: "WWWWWWWW" | char-sim to GT: 0%
+======================================================================
+redaction: ind2_deterrent  chars [7, 11]
+  ground truth: "deterrent"
+  [semantic] control_sim=0.93 (anchor for contrastive scores)
+  [FIT ] chars=9  cos=0.90 sc=-0.45  |WWWWWWWWW|
+  [FIT ] chars=7  cos=0.89 sc=-0.63  |WWWWWWW|
+  [FIT ] chars=11  cos=0.91 sc=-0.27  |WWWWWWWWWWW|
+  [    ] chars=5  (char range!)  cos=0.86 sc=-1.05  |WWWWW|
+  [    ] chars=13  (char range!)  cos=0.91 sc=-0.24  |WWWWWWWWWWWWW|
+  [    ] chars=5  (char range!)  cos=0.86 sc=-1.05  |WWWWW|
+  [result] off-target (sc -0.27, raw 0.91) | best candidate: "WWWWWWWWWWW" | char-sim to GT: 0%
+======================================================================
+redaction: ind3_potential  chars [7, 11]
+  ground truth: "potential"
+  [semantic] control_sim=0.92 (anchor for contrastive scores)
+  [FIT ] chars=9  cos=0.91 sc=-0.23  |WWWWWWWWW|
+  [FIT ] chars=7  cos=0.91 sc=-0.23  |WWWWWWW|
+  [FIT ] chars=11  cos=0.90 sc=-0.30  |WWWWWWWWWWW|
+  [    ] chars=5  (char range!)  cos=0.89 sc=-0.42  |WWWWW|
+  [    ] chars=13  (char range!)  cos=0.89 sc=-0.43  |WWWWWWWWWWWWW|
+  [    ] chars=5  (char range!)  cos=0.89 sc=-0.42  |WWWWW|
+  [result] off-target (sc -0.23, raw 0.91) | best candidate: "WWWWWWW" | char-sim to GT: 0%
+======================================================================
+redaction: ind4_northern  chars [6, 10]
+  ground truth: "northern"
+  [semantic] control_sim=0.91 (anchor for contrastive scores)
+  [FIT ] chars=8  cos=0.92 sc=0.02  |WWWWWWWW|
+  [FIT ] chars=6  cos=0.90 sc=-0.14  |WWWWWW|
+  [FIT ] chars=10  cos=0.92 sc=0.02  |WWWWWWWWWW|
+  [    ] chars=4  (char range!)  cos=0.91 sc=-0.02  |WWWW|
+  [    ] chars=12  (char range!)  cos=0.91 sc=-0.03  |WWWWWWWWWWWW|
+  [    ] chars=4  (char range!)  cos=0.91 sc=-0.02  |WWWW|
+  [result] off-target (sc 0.02, raw 0.92) | best candidate: "WWWWWWWWWW" | char-sim to GT: 0%
+======================================================================
+redaction: ind5_large  chars [3, 7]
+  ground truth: "large"
+  [semantic] control_sim=0.93 (anchor for contrastive scores)
+  [FIT ] chars=5  cos=0.85 sc=-1.00  |WWWWW|
+  [FIT ] chars=3  cos=0.90 sc=-0.34  |WWW|
+  [FIT ] chars=7  cos=0.87 sc=-0.84  |WWWWWWW|
+  [    ] chars=1  (char range!)  cos=0.97 sc=0.60  |W|
+  [    ] chars=9  (char range!)  cos=0.89 sc=-0.45  |WWWWWWWWW|
+  [    ] chars=1  (char range!)  cos=0.97 sc=0.60  |W|
+  [result] off-target (sc -0.34, raw 0.90) | best candidate: "WWW" | char-sim to GT: 0%
+======================================================================
+redaction: ind6_industrial  chars [8, 12]
+  ground truth: "industrial"
+  [semantic] control_sim=0.82 (anchor for contrastive scores)
+  [FIT ] chars=10  cos=0.82 sc=-0.02  |WWWWWWWWWW|
+  [FIT ] chars=8  cos=0.78 sc=-0.23  |WWWWWWWW|
+  [FIT ] chars=12  cos=0.84 sc=0.12  |WWWWWWWWWWWW|
+  [    ] chars=6  (char range!)  cos=0.75 sc=-0.38  |WWWWWW|
+  [    ] chars=14  (char range!)  cos=0.85 sc=0.14  |WWWWWWWWWWWWWW|
+  [    ] chars=6  (char range!)  cos=0.75 sc=-0.38  |WWWWWW|
+  [result] off-target (sc 0.12, raw 0.84) | best candidate: "WWWWWWWWWWWW" | char-sim to GT: 0%
+======================================================================
+redaction: pak1_israel  chars [5, 8]
+  note: True redaction from a Pakistan missile-intent passage; ground_truth 'Israel' is the user's guess from historical context (outside this excerpt) -- more document context may be needed.
+  ground truth: "Israel"
+  [semantic] control_sim=0.94 (anchor for contrastive scores)
+  [FIT ] chars=6  cos=0.93 sc=-0.17  |WWWWWW|
+  [FIT ] chars=5  cos=0.92 sc=-0.28  |WWWWW|
+  [FIT ] chars=8  cos=0.93 sc=-0.07  |WWWWWWWW|
+  [    ] chars=3  (char range!)  cos=0.89 sc=-0.85  |WWW|
+  [    ] chars=10  (char range!)  cos=0.94 sc=-0.04  |WWWWWWWWWW|
+  [    ] chars=3  (char range!)  cos=0.89 sc=-0.85  |WWW|
+  [result] off-target (sc -0.07, raw 0.93) | best candidate: "WWWWWWWW" | char-sim to GT: 0%
+======================================================================
+GROUND TRUTH SUMMARY
+  ind1_active: GT "active" -> best "WWWWWWWW" (off-target)  sc=0.20
+  ind2_deterrent: GT "deterrent" -> best "WWWWWWWWWWW" (off-target)  sc=-0.27
+  ind3_potential: GT "potential" -> best "WWWWWWW" (off-target)  sc=-0.23
+  ind4_northern: GT "northern" -> best "WWWWWWWWWW" (off-target)  sc=0.02
+  ind5_large: GT "large" -> best "WWW" (off-target)  sc=-0.34
+  ind6_industrial: GT "industrial" -> best "WWWWWWWWWWWW" (off-target)  sc=0.12
+  pak1_israel: GT "Israel" -> best "WWWWWWWW" (off-target)  sc=-0.07
+======================================================================
+GRADED RECOVERY: exact=0  near-miss=0  off-target=7  mean best-candidate contrastive score=-0.08

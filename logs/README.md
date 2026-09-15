@@ -33,6 +33,9 @@ Examples:
     # constraint-tightness sweep (one candidate pool, re-verified at each delta)
     python log_run.py sweep --redactions redactions_broad.json --backend mercury --semantic --prior-weight 0.5 --tightness-sweep 0,3,5,10
 
+    # ground-truth-free observed-support difficulty diagnostic
+    python log_run.py n_eff --redactions redactions_broad.json --backend mercury --n-eff --candidates 8
+
 No API key? Add `--dry-run` to exercise the whole pipeline offline (echo backend).
 
 If `runs.csv` ever gets out of sync with the sidecars (e.g. after a schema
@@ -46,11 +49,18 @@ change), rebuild it from the JSON sidecars (the source of truth):
 `semantic`, `semantic_threshold`, `echo_penalty`, `prior_weight`, `full_pool`,
 `loosen`, `tightness_sweep`, `exact`, `near_miss`, `off_target`, `mean_score`,
 `metric`, `blind_exact`, `candidate_recall_at_k`, `blind_exact_rate`,
-`candidate_recall_rate`, `truncated`, `fim_truncated`, `chat_truncated`,
-`empty_responses`, `artifact_filtered`, `fallback_chat`, `fim_budget_min`,
+`candidate_recall_rate`, `n_eff_enabled`, `n_eff_mean`, `n_eff_median`, `n_eff_nonempty`,
+`n_eff_mean_all_candidates`, `n_eff_mean_in_range_candidates`,
+`n_eff_mean_in_range_unique`, `truncated`, `fim_truncated`, `chat_truncated`,
+`empty_responses`, `artifact_filtered`, `duplicate_candidates`, `fallback_chat`,
+`fim_budget_min`,
 `fim_budget_max`, `fim_budget_mean`, `deltas`, `notes`
 
 - `blind_exact` and `candidate_recall_at_k` are the honest deployment metrics.
+- `n_eff_*` is a ground-truth-free observed-support proxy. It is computed from
+  repeated cleaned draws when the backend provides them; `n_eff = exp(H)` uses
+  the empirical frequency distribution, not model probabilities. Empty
+  in-range pools are retained per redaction but excluded from mean/median.
 - `metric` describes the separate oracle diagnostic score; it must not be read
   as blind performance.
 - Sweep runs put a `delta:exact/near/off/mean` list in `deltas` instead of the

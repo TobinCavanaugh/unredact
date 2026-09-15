@@ -1,0 +1,273 @@
+{
+  "schema": "unredact-run/v1",
+  "meta": {
+    "timestamp": "2026-08-03T19:33:39+00:00",
+    "argv": [
+      "--redactions",
+      "redactions_broad.json",
+      "--backend",
+      "mercury",
+      "--semantic",
+      "--echo-penalty",
+      "0",
+      "--json-results",
+      "C:\\Users\\tobin\\Documents\\repos\\unredact\\logs\\20260803-193339_echo_off.json"
+    ],
+    "redactions_file": "redactions_broad.json",
+    "backend": "mercury",
+    "mode": "fim",
+    "candidates": 6,
+    "full_pool": false,
+    "semantic": true,
+    "semantic_threshold": 0.7,
+    "semantic_control": "zzzzzz",
+    "semantic_window": 8,
+    "echo_penalty": 0.0,
+    "prior_weight": 0.0,
+    "loosen": 0,
+    "tightness_sweep": "",
+    "dry_run": false,
+    "git_commit": "f3367e3"
+  },
+  "summary": {
+    "n": 21,
+    "exact": 5,
+    "near_miss": 2,
+    "off_target": 14,
+    "mean_score": 0.5519761878447065,
+    "metric_label": "mean best-candidate contrastive score"
+  },
+  "redactions": [
+    {
+      "id": "sov1_triad",
+      "ground_truth": "triad",
+      "best": "mission",
+      "exact": false,
+      "score": 0.4797848951573709,
+      "classification": "off-target",
+      "raw": 0.8869464993476868,
+      "char_sim": 0.16666666666666666,
+      "control_sim": 0.7826793193817139
+    },
+    {
+      "id": "sov2_sea_based",
+      "ground_truth": "sea-based",
+      "best": "nuclear",
+      "exact": false,
+      "score": 0.30984517483314433,
+      "classification": "off-target",
+      "raw": 0.7314450740814209,
+      "char_sim": 0.25,
+      "control_sim": 0.610877275466919
+    },
+    {
+      "id": "sov3_patrol",
+      "ground_truth": "patrol",
+      "best": "duty",
+      "exact": false,
+      "score": 0.7118923447323335,
+      "classification": "near-miss",
+      "raw": 0.9544937610626221,
+      "char_sim": 0.2,
+      "control_sim": 0.8420512676239014
+    },
+    {
+      "id": "sov4_expanded",
+      "ground_truth": "expanded",
+      "best": "completed",
+      "exact": false,
+      "score": 0.6825199628935736,
+      "classification": "off-target",
+      "raw": 0.9791930913925171,
+      "char_sim": 0.35294117647058826,
+      "control_sim": 0.934462308883667
+    },
+    {
+      "id": "sov5_hardened_missile_silos",
+      "ground_truth": "hardened missile silos",
+      "best": "any target on Earth",
+      "exact": false,
+      "score": 0.4862006052507345,
+      "classification": "off-target",
+      "raw": 0.8820648193359375,
+      "char_sim": 0.24390243902439024,
+      "control_sim": 0.7704645395278931
+    },
+    {
+      "id": "chi1_solid_propellant_successor",
+      "ground_truth": "solid-propellant successor",
+      "best": "new generation of missiles",
+      "exact": false,
+      "score": 0.20467234775019394,
+      "classification": "off-target",
+      "raw": 0.6089258790016174,
+      "char_sim": 0.15384615384615385,
+      "control_sim": 0.5082855224609375
+    },
+    {
+      "id": "chi2_no_first_use",
+      "ground_truth": "no first use",
+      "best": "no first use",
+      "exact": true,
+      "score": 1.0,
+      "classification": "EXACT",
+      "raw": 1.0,
+      "char_sim": 1.0,
+      "control_sim": 0.8489793539047241
+    },
+    {
+      "id": "chi3_retaliation",
+      "ground_truth": "retaliation",
+      "best": "deterrence",
+      "exact": false,
+      "score": 0.34792761580165077,
+      "classification": "off-target",
+      "raw": 0.900651752948761,
+      "char_sim": 0.2857142857142857,
+      "control_sim": 0.8476423025131226
+    },
+    {
+      "id": "chi4_double",
+      "ground_truth": "double",
+      "best": "increase",
+      "exact": false,
+      "score": 0.6237073404958698,
+      "classification": "off-target",
+      "raw": 0.9468433856964111,
+      "char_sim": 0.14285714285714285,
+      "control_sim": 0.858735978603363
+    },
+    {
+      "id": "chi5_reentry_vehicles",
+      "ground_truth": "reentry vehicles",
+      "best": "units, or MCMs, will",
+      "exact": false,
+      "score": -0.34589848839514203,
+      "classification": "off-target",
+      "raw": 0.7118477821350098,
+      "char_sim": 0.16666666666666666,
+      "control_sim": 0.7859034538269043
+    },
+    {
+      "id": "gulf1_strait_of_hormuz",
+      "ground_truth": "Strait of Hormuz",
+      "best": "Strait of Hormuz",
+      "exact": true,
+      "score": 1.0000002703198045,
+      "classification": "EXACT",
+      "raw": 1.0000001192092896,
+      "char_sim": 1.0,
+      "control_sim": 0.5590064525604248
+    },
+    {
+      "id": "gulf2_terminal",
+      "ground_truth": "terminal",
+      "best": "terminal",
+      "exact": true,
+      "score": 1.0,
+      "classification": "EXACT",
+      "raw": 1.0,
+      "char_sim": 1.0,
+      "control_sim": 0.8962336182594299
+    },
+    {
+      "id": "gulf3_redundancy",
+      "ground_truth": "redundancy",
+      "best": "capacity",
+      "exact": false,
+      "score": 0.2978800994566719,
+      "classification": "off-target",
+      "raw": 0.9431943893432617,
+      "char_sim": 0.2222222222222222,
+      "control_sim": 0.9190941452980042
+    },
+    {
+      "id": "gulf4_strategic_petroleum_reserves",
+      "ground_truth": "strategic petroleum reserves",
+      "best": "oil supplies of the major nations",
+      "exact": false,
+      "score": 0.6655635099331474,
+      "classification": "off-target",
+      "raw": 0.8990011215209961,
+      "char_sim": 0.26229508196721313,
+      "control_sim": 0.698002815246582
+    },
+    {
+      "id": "gulf5_exhausted",
+      "ground_truth": "exhausted",
+      "best": "exhausted",
+      "exact": true,
+      "score": 1.000000650814983,
+      "classification": "EXACT",
+      "raw": 1.0000001192092896,
+      "char_sim": 1.0,
+      "control_sim": 0.8168307542800903
+    },
+    {
+      "id": "dprk1_sanctions",
+      "ground_truth": "sanctions",
+      "best": "community",
+      "exact": false,
+      "score": 0.12500183194575185,
+      "classification": "off-target",
+      "raw": 0.9074752330780029,
+      "char_sim": 0.3333333333333333,
+      "control_sim": 0.8942571878433228
+    },
+    {
+      "id": "dprk2_fissile_material",
+      "ground_truth": "fissile material",
+      "best": "fissile material",
+      "exact": true,
+      "score": 0.9999996290901618,
+      "classification": "EXACT",
+      "raw": 0.9999999403953552,
+      "char_sim": 1.0,
+      "control_sim": 0.8393015265464783
+    },
+    {
+      "id": "dprk3_demonstrated",
+      "ground_truth": "demonstrated",
+      "best": "fully realized",
+      "exact": false,
+      "score": 0.9128027555568231,
+      "classification": "near-miss",
+      "raw": 0.993439257144928,
+      "char_sim": 0.3076923076923077,
+      "control_sim": 0.9247597455978394
+    },
+    {
+      "id": "dprk4_longer_range_delivery_vehicle",
+      "ground_truth": "longer-range delivery vehicle",
+      "best": "missile launch capability",
+      "exact": false,
+      "score": 0.27261797091462453,
+      "classification": "off-target",
+      "raw": 0.7100796699523926,
+      "char_sim": 0.14814814814814814,
+      "control_sim": 0.6014194488525391
+    },
+    {
+      "id": "dprk5_uncertainty",
+      "ground_truth": "uncertainty",
+      "best": "concerns",
+      "exact": false,
+      "score": 0.5560850732391044,
+      "classification": "off-target",
+      "raw": 0.9389880299568176,
+      "char_sim": 0.5263157894736842,
+      "control_sim": 0.8625593185424805
+    },
+    {
+      "id": "dprk6_iran",
+      "ground_truth": "Iran",
+      "best": "China",
+      "exact": false,
+      "score": 0.2608963549480338,
+      "classification": "off-target",
+      "raw": 0.8503562808036804,
+      "char_sim": 0.4444444444444444,
+      "control_sim": 0.7975335121154785
+    }
+  ]
+}

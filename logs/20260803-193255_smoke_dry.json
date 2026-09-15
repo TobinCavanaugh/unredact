@@ -1,0 +1,116 @@
+{
+  "schema": "unredact-run/v1",
+  "meta": {
+    "timestamp": "2026-08-03T19:32:55+00:00",
+    "argv": [
+      "--dry-run",
+      "--redactions",
+      "redactions.json",
+      "--semantic",
+      "--json-results",
+      "C:\\Users\\tobin\\Documents\\repos\\unredact\\logs\\20260803-193255_smoke_dry.json"
+    ],
+    "redactions_file": "redactions.json",
+    "backend": "echo",
+    "mode": null,
+    "candidates": 6,
+    "full_pool": false,
+    "semantic": true,
+    "semantic_threshold": 0.7,
+    "semantic_control": "zzzzzz",
+    "semantic_window": 8,
+    "echo_penalty": 0.5,
+    "prior_weight": 0.0,
+    "loosen": 0,
+    "tightness_sweep": "",
+    "dry_run": true,
+    "git_commit": "f3367e3"
+  },
+  "summary": {
+    "n": 7,
+    "exact": 0,
+    "near_miss": 0,
+    "off_target": 7,
+    "mean_score": -0.08046667387520808,
+    "metric_label": "mean best-candidate contrastive score"
+  },
+  "redactions": [
+    {
+      "id": "ind1_active",
+      "ground_truth": "active",
+      "best": "WWWWWWWW",
+      "exact": false,
+      "score": 0.200521353818938,
+      "classification": "off-target",
+      "raw": 0.9327648878097534,
+      "char_sim": 0.0,
+      "control_sim": 0.9159013032913208
+    },
+    {
+      "id": "ind2_deterrent",
+      "ground_truth": "deterrent",
+      "best": "WWWWWWWWWWW",
+      "exact": false,
+      "score": -0.27339238116392717,
+      "classification": "off-target",
+      "raw": 0.9125242233276367,
+      "char_sim": 0.0,
+      "control_sim": 0.931304931640625
+    },
+    {
+      "id": "ind3_potential",
+      "ground_truth": "potential",
+      "best": "WWWWWWW",
+      "exact": false,
+      "score": -0.23037800558656604,
+      "classification": "off-target",
+      "raw": 0.9059563875198364,
+      "char_sim": 0.0,
+      "control_sim": 0.9235652685165405
+    },
+    {
+      "id": "ind4_northern",
+      "ground_truth": "northern",
+      "best": "WWWWWWWWWW",
+      "exact": false,
+      "score": 0.021084228719493756,
+      "classification": "off-target",
+      "raw": 0.9158718585968018,
+      "char_sim": 0.0,
+      "control_sim": 0.9140598773956299
+    },
+    {
+      "id": "ind5_large",
+      "ground_truth": "large",
+      "best": "WWW",
+      "exact": false,
+      "score": -0.33840999732377725,
+      "classification": "off-target",
+      "raw": 0.9022265672683716,
+      "char_sim": 0.0,
+      "control_sim": 0.926948070526123
+    },
+    {
+      "id": "ind6_industrial",
+      "ground_truth": "industrial",
+      "best": "WWWWWWWWWWWW",
+      "exact": false,
+      "score": 0.1230858219020658,
+      "classification": "off-target",
+      "raw": 0.8428585529327393,
+      "char_sim": 0.0,
+      "control_sim": 0.8208017945289612
+    },
+    {
+      "id": "pak1_israel",
+      "ground_truth": "Israel",
+      "best": "WWWWWWWW",
+      "exact": false,
+      "score": -0.06577773749268359,
+      "classification": "off-target",
+      "raw": 0.9341208934783936,
+      "char_sim": 0.0,
+      "control_sim": 0.9381868243217468
+    }
+  ]
+}

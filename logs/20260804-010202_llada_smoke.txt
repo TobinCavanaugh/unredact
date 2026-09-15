@@ -1,0 +1,21 @@
+======================================================================
+redaction: ind1_active  chars [4, 8]
+  ground truth: "active"
+  [blind] best candidate: "active" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=6  == GT  |active|
+Traceback (most recent call last):
+  File "C:\Users\tobin\Documents\repos\unredact\unredact.py", line 1389, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tobin\Documents\repos\unredact\unredact.py", line 1384, in main
+    run(redactions, backend, args.candidates, scorer, args.semantic_threshold,
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        args.prior_weight, priors, json_path=json_path, meta=meta)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tobin\Documents\repos\unredact\unredact.py", line 980, in run
+    print(f"  [{mark}] chars={info['chars']}{flag}  |{info['text']}|", file=out)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u25bc' in position 25: character maps to <undefined>

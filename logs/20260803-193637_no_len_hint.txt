@@ -1,0 +1,191 @@
+======================================================================
+redaction: sov1_triad  chars [3, 8]
+  ground truth: "triad"
+
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]
+Loading weights: 100%|##########| 103/103 [00:00<00:00, 8773.27it/s]
+  [semantic] control_sim=0.78 (anchor for contrastive scores)
+  [    ] chars=23  (char range!)  cos=0.89 sc=0.48  |strategic missile force|
+  [    ] chars=24  (char range!)  cos=0.87 sc=0.42  |strategic nuclear forces|
+  [    ] chars=31  (char range!)  cos=0.83 sc=0.23  |Soviet strategic nuclear forces|
+  [result] off-target (sc 0.48, raw 0.89) | best candidate: "strategic missile force" | char-sim to GT: 21%
+======================================================================
+redaction: sov2_sea_based  chars [7, 12]
+  note: Second occurrence; the first 'sea-based' stays visible earlier in the same document, so the keyness prior should credit it.
+  ground truth: "sea-based"
+  [semantic] control_sim=0.61 (anchor for contrastive scores)
+  [    ] chars=24  (char range!)  cos=0.60 sc=-0.02  |Soviet strategic nuclear|
+  [    ] chars=27  (char range!)  cos=0.70 sc=0.24  |strategic nuclear deterrent|
+  [    ] chars=34  (char range!)  cos=0.63 sc=0.04  |Soviet strategic nuclear deterrent|
+  [result] off-target (sc -0.02, raw 0.60) | best candidate: "Soviet strategic nuclear" | char-sim to GT: 18%
+======================================================================
+redaction: sov3_patrol  chars [4, 9]
+  ground truth: "patrol"
+  [semantic] control_sim=0.84 (anchor for contrastive scores)
+  [FIT ] chars=6  == GT  cos=1.00 sc=1.00  |patrol|
+  [    ] chars=11  (char range!)  cos=0.95 sc=0.68  |active duty|
+  [result] EXACT MATCH | best candidate: "patrol" | char-sim to GT: 100%
+======================================================================
+redaction: sov4_expanded  chars [6, 11]
+  ground truth: "expanded"
+  [semantic] control_sim=0.93 (anchor for contrastive scores)
+  [FIT ] chars=9  cos=0.98 sc=0.68  |completed|
+  [FIT ] chars=7  cos=0.97 sc=0.47  |delayed|
+  [    ] chars=26  (char range!)  cos=0.97 sc=0.57  |underway for several years|
+  [result] off-target (sc 0.68, raw 0.98) | best candidate: "completed" | char-sim to GT: 35%
+======================================================================
+redaction: sov5_hardened_missile_silos  chars [18, 28]
+  ground truth: "hardened missile silos"
+  [semantic] control_sim=0.77 (anchor for contrastive scores)
+  [FIT ] chars=28  cos=0.85 sc=0.33  |a large portion of a US city|
+  [    ] chars=36  (char range!)  cos=0.87 sc=0.43  |the United States' strategic targets|
+  [    ] chars=37  (char range!)  cos=0.92 sc=0.64  |the entire US strategic missile force|
+  [result] off-target (sc 0.33, raw 0.85) | best candidate: "a large portion of a US city" | char-sim to GT: 24%
+======================================================================
+redaction: chi1_solid_propellant_successor  chars [22, 32]
+  ground truth: "solid-propellant successor"
+  [semantic] control_sim=0.51 (anchor for contrastive scores)
+  [FIT ] chars=25  cos=0.42 sc=-0.17  |a new generation of ICBMs|
+  [FIT ] chars=22  cos=0.44 sc=-0.15  |new generation of ICBM|
+  [    ] chars=38  (char range!)  cos=0.60 sc=0.19  |new intercontinental ballistic missile|
+  [result] off-target (sc -0.15, raw 0.44) | best candidate: "new generation of ICBM" | char-sim to GT: 12%
+======================================================================
+redaction: chi2_no_first_use  chars [8, 18]
+  ground truth: "no first use"
+  [semantic] control_sim=0.85 (anchor for contrastive scores)
+  [FIT ] chars=12  == GT  cos=1.00 sc=1.00  |no first use|
+  [    ] chars=31  (char range!)  cos=0.88 sc=0.23  |no first use of nuclear weapons|
+  [result] EXACT MATCH | best candidate: "no first use" | char-sim to GT: 100%
+======================================================================
+redaction: chi3_retaliation  chars [9, 14]
+  ground truth: "retaliation"
+  [semantic] control_sim=0.85 (anchor for contrastive scores)
+  [FIT ] chars=10  cos=0.90 sc=0.35  |deterrence|
+  [result] off-target (sc 0.35, raw 0.90) | best candidate: "deterrence" | char-sim to GT: 29%
+======================================================================
+redaction: chi4_double  chars [4, 9]
+  note: Common verb; double/triple/grow/increase all fit, so partial credit is the ceiling.
+  ground truth: "double"
+  [semantic] control_sim=0.86 (anchor for contrastive scores)
+  [FIT ] chars=8  cos=0.95 sc=0.62  |increase|
+  [    ] chars=23  (char range!)  cos=0.92 sc=0.46  |increase to roughly 300|
+  [    ] chars=30  (char range!)  cos=0.83 sc=-0.23  |increase to about 200 warheads|
+  [result] off-target (sc 0.62, raw 0.95) | best candidate: "increase" | char-sim to GT: 14%
+======================================================================
+redaction: chi5_reentry_vehicles  chars [12, 22]
+  ground truth: "reentry vehicles"
+  [semantic] control_sim=0.79 (anchor for contrastive scores)
+  [FIT ] chars=13  cos=0.76 sc=-0.14  |warheads will|
+  [    ] chars=8  (char range!)  cos=0.77 sc=-0.08  |warheads|
+  [    ] chars=8  (char range!)  cos=0.78 sc=-0.01  |missiles|
+  [result] off-target (sc -0.14, raw 0.76) | best candidate: "warheads will" | char-sim to GT: 28%
+======================================================================
+redaction: gulf1_strait_of_hormuz  chars [12, 22]
+  ground truth: "Strait of Hormuz"
+  [semantic] control_sim=0.56 (anchor for contrastive scores)
+  [FIT ] chars=19  cos=0.55 sc=-0.03  |Ras Tanura terminal|
+  [result] off-target (sc -0.03, raw 0.55) | best candidate: "Ras Tanura terminal" | char-sim to GT: 34%
+======================================================================
+redaction: gulf2_terminal  chars [6, 11]
+  ground truth: "terminal"
+  [semantic] control_sim=0.90 (anchor for contrastive scores)
+  [semantic] echo-penalized 2 candidate(s) (reproduce adjacent text; -0.50): , in Saudi Arabia, in Saudi Arabia
+  [    ] chars=15  (char range!)  cos=0.95 sc=0.05  (echo)  |in Saudi Arabia|
+  [    ] chars=17  (char range!)  cos=0.95 sc=0.06  (echo)  |, in Saudi Arabia|
+  [result] off-target (sc 0.05, raw 0.95) | best candidate: "in Saudi Arabia" | char-sim to GT: 26%
+======================================================================
+redaction: gulf3_redundancy  chars [8, 13]
+  ground truth: "redundancy"
+  [semantic] control_sim=0.92 (anchor for contrastive scores)
+  [FIT ] chars=12  cos=0.95 sc=0.39  |alternatives|
+  [FIT ] chars=8  cos=0.94 sc=0.30  |capacity|
+  [    ] chars=27  (char range!)  cos=0.94 sc=0.23  |capacity to offset the loss|
+  [result] off-target (sc 0.39, raw 0.95) | best candidate: "alternatives" | char-sim to GT: 18%
+======================================================================
+redaction: gulf4_strategic_petroleum_reserves  chars [24, 34]
+  ground truth: "strategic petroleum reserves"
+  [semantic] control_sim=0.70 (anchor for contrastive scores)
+  [    ] chars=13  (char range!)  cos=0.90 sc=0.66  |oil supply to|
+  [    ] chars=12  (char range!)  cos=0.93 sc=0.78  |oil reserves|
+  [    ] chars=9  (char range!)  cos=0.78 sc=0.28  |supply to|
+  [result] off-target (sc 0.66, raw 0.90) | best candidate: "oil supply to" | char-sim to GT: 20%
+======================================================================
+redaction: gulf5_exhausted  chars [7, 12]
+  ground truth: "exhausted"
+  [semantic] control_sim=0.82 (anchor for contrastive scores)
+  [FIT ] chars=9  == GT  cos=1.00 sc=1.00  |exhausted|
+  [result] EXACT MATCH | best candidate: "exhausted" | char-sim to GT: 100%
+======================================================================
+redaction: dprk1_sanctions  chars [7, 12]
+  ground truth: "sanctions"
+  [semantic] control_sim=0.89 (anchor for contrastive scores)
+  [FIT ] chars=7  cos=0.93 sc=0.33  |efforts|
+  [    ] chars=13  (char range!)  cos=0.92 sc=0.24  |condemnations|
+  [    ] chars=26  (char range!)  cos=0.96 sc=0.64  |condemnation and sanctions|
+  [result] off-target (sc 0.33, raw 0.93) | best candidate: "efforts" | char-sim to GT: 25%
+======================================================================
+redaction: dprk2_fissile_material  chars [12, 22]
+  ground truth: "fissile material"
+  [semantic] control_sim=0.84 (anchor for contrastive scores)
+  [FIT ] chars=16  == GT  cos=1.00 sc=1.00  |fissile material|
+  [    ] chars=32  (char range!)  cos=0.89 sc=0.33  |material and technical expertise|
+  [    ] chars=43  (char range!)  cos=0.88 sc=0.27  |material and technical expertise to develop|
+  [result] EXACT MATCH | best candidate: "fissile material" | char-sim to GT: 100%
+======================================================================
+redaction: dprk3_demonstrated  chars [10, 15]
+  note: Many verbs fit (verified/proven/demonstrated); partial credit is the ceiling.
+  ground truth: "demonstrated"
+  [semantic] control_sim=0.92 (anchor for contrastive scores)
+  [    ] chars=9  (char range!)  cos=0.99 sc=0.87  |developed|
+  [    ] chars=8  (char range!)  cos=0.99 sc=0.91  |realized|
+  [result] near-miss (sc 0.87, raw 0.99) | best candidate: "developed" | char-sim to GT: 48%
+======================================================================
+redaction: dprk4_longer_range_delivery_vehicle  chars [25, 35]
+  ground truth: "longer-range delivery vehicle"
+  [semantic] control_sim=0.60 (anchor for contrastive scores)
+  [    ] chars=20  (char range!)  cos=0.72 sc=0.30  |medium-range missile|
+  [    ] chars=14  (char range!)  cos=0.72 sc=0.30  |missile launch|
+  [    ] chars=7  (char range!)  cos=0.70 sc=0.24  |missile|
+  [result] off-target (sc 0.30, raw 0.72) | best candidate: "medium-range missile" | char-sim to GT: 49%
+======================================================================
+redaction: dprk5_uncertainty  chars [9, 14]
+  ground truth: "uncertainty"
+  [semantic] control_sim=0.86 (anchor for contrastive scores)
+  [semantic] echo-penalized 1 candidate(s) (reproduce adjacent text; -0.50): concerns
+  [    ] chars=8  (char range!)  cos=0.94 sc=0.06  (echo)  |concerns|
+  [    ] chars=5  (char range!)  cos=0.93 sc=0.47  |issue|
+  [result] off-target (sc 0.06, raw 0.94) | best candidate: "concerns" | char-sim to GT: 53%
+======================================================================
+redaction: dprk6_iran  chars [3, 7]
+  note: True absent-entity case: 'Iran' is not present in the visible document (doc_context excludes it); only historical context can supply it.
+  ground truth: "Iran"
+  [semantic] control_sim=0.80 (anchor for contrastive scores)
+  [FIT ] chars=5  cos=0.85 sc=0.26  |China|
+  [    ] chars=22  (char range!)  cos=0.81 sc=0.04  |the Chinese government|
+  [    ] chars=30  (char range!)  cos=0.84 sc=0.23  |the regime's domestic industry|
+  [result] off-target (sc 0.26, raw 0.85) | best candidate: "China" | char-sim to GT: 44%
+======================================================================
+GROUND TRUTH SUMMARY
+  sov1_triad: GT "triad" -> best "strategic missile force" (off-target)  sc=0.48
+  sov2_sea_based: GT "sea-based" -> best "Soviet strategic nuclear" (off-target)  sc=-0.02
+  sov3_patrol: GT "patrol" -> best "patrol" (EXACT)  sc=1.00
+  sov4_expanded: GT "expanded" -> best "completed" (off-target)  sc=0.68
+  sov5_hardened_missile_silos: GT "hardened missile silos" -> best "a large portion of a US city" (off-target)  sc=0.33
+  chi1_solid_propellant_successor: GT "solid-propellant successor" -> best "new generation of ICBM" (off-target)  sc=-0.15
+  chi2_no_first_use: GT "no first use" -> best "no first use" (EXACT)  sc=1.00
+  chi3_retaliation: GT "retaliation" -> best "deterrence" (off-target)  sc=0.35
+  chi4_double: GT "double" -> best "increase" (off-target)  sc=0.62
+  chi5_reentry_vehicles: GT "reentry vehicles" -> best "warheads will" (off-target)  sc=-0.14
+  gulf1_strait_of_hormuz: GT "Strait of Hormuz" -> best "Ras Tanura terminal" (off-target)  sc=-0.03
+  gulf2_terminal: GT "terminal" -> best "in Saudi Arabia" (off-target)  sc=0.05
+  gulf3_redundancy: GT "redundancy" -> best "alternatives" (off-target)  sc=0.39
+  gulf4_strategic_petroleum_reserves: GT "strategic petroleum reserves" -> best "oil supply to" (off-target)  sc=0.66
+  gulf5_exhausted: GT "exhausted" -> best "exhausted" (EXACT)  sc=1.00
+  dprk1_sanctions: GT "sanctions" -> best "efforts" (off-target)  sc=0.33
+  dprk2_fissile_material: GT "fissile material" -> best "fissile material" (EXACT)  sc=1.00
+  dprk3_demonstrated: GT "demonstrated" -> best "developed" (near-miss)  sc=0.87
+  dprk4_longer_range_delivery_vehicle: GT "longer-range delivery vehicle" -> best "medium-range missile" (off-target)  sc=0.30
+  dprk5_uncertainty: GT "uncertainty" -> best "concerns" (off-target)  sc=0.06
+  dprk6_iran: GT "Iran" -> best "China" (off-target)  sc=0.26
+======================================================================
+GRADED RECOVERY: exact=4  near-miss=1  off-target=16  mean best-candidate contrastive score=0.43

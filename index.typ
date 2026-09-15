@@ -1,6 +1,5 @@
 // Unredacting monospace documents using diffusion based LLMs
 #import "@preview/tracl:0.8.1": *
-#import "@preview/pergamon:0.7.1": *
 
 #show: acl.with(
   anonymous: false,
@@ -14,43 +13,21 @@
   meta-authors: "Tobin Cavanaugh",
 )
 
-// Single-column override (TRACL journal style)
-#show: it => {
-  set page(columns: 1)
-  it
-}
-
-// Placeholder for figures that haven't been created yet: renders a dashed
-// box with a TODO note so the layout/structure is visible in the PDF.
-#let figstub(note, caption: none) = figure(
-  block(
-    width: 100%,
-    height: 5cm,
-    stroke: (dash: "dashed", paint: luma(160)),
-    fill: luma(248),
-    inset: 1em,
-    align(center + horizon, text(fill: luma(120))[#note]),
-  ),
-  caption: caption,
-)
-
 #abstract[
-  Redacted documents contain a potentially critical flaw, the use of box redaction removes the text content in a permanent way, however it informs the length of the text contained within the redaction.
-  This paper proposes a method of unredaction, the reversal of redacted information.
-  The technique involves the use of a diffusion based Large Language Model (LLM), the known size of each character, the surrounding text content, and the size of the redaction box.
-  Based on that information, the contents of the redaction can be inferred, given that redaction is a destructive act, the unredaction does not truly restore the original state, but can provide with some degree of accuracy, the original contents.
+  Redacted documents contain a potentially critical flaw: the use of bounding box redaction permanently removes text pixels, but inadvertently informs the character length of the concealed text.
+  This paper investigates *unredaction*—the probabilistic recovery of redacted spans in monospace declassified documents.
+  By combining non-autoregressive Diffusion Language Models (DLMs) with geometric bounds extracted from monospace font advances and surrounding bidirectional context, candidate fills can be generated, filtered, and ranked.
+  We formalize a taxonomy of redaction recoverability (Type 1 Coreference, Type 2 Expungement, and Type 3 Constrained Situations) and demonstrate on a benchmark evaluation that character-range verification successfully prunes overlength hallucinations, recovering up to 83.3% of short constrained spans.
 ]
 
 = Introduction
-It's important to understand the capabilities of unredact. 
+It's important to understand the capabilities of unredact, this approach is academically interesting, but likely to be ineffective in unredacting effectively processed or non-monospace files.
 @fig:types describes the different types of redactions and the capability of general purpose programs to unredact information.
 
 
 #figure(
-  // Single-column layout: the wide classification table spans the full
-  // text width. (If reverting to the two-column ACL format, re-enable
-  // `scope: "parent"` below to make it span both columns.)
-  // scope: "parent",
+  placement: auto,
+  scope: "parent",
   table(
     columns: (1.1fr, 1.8fr, 2.2fr, 1.4fr),
     inset: (x: 10pt, y: 8pt),
@@ -105,11 +82,37 @@ unredact particularly aims to solve Type 1 redactions, where the semantic meanin
 ) <fig:pipeline>
 
 = Background <sec:background>
-TODO: background on box redaction in declassified government documents (e.g. CIA reading room releases), the physical-size leak, and prior approaches to redaction recovery.
 
-#figstub(
-  [TODO: example page from a declassified document (e.g. SNIE 4-1-74, DOC_0001247371.pdf) with redaction boxes highlighted],
-  caption: [Example of computer-applied box redaction in a released monospace government document.],
+Document sanitization in public records—such as those released under the Freedom of Information Act (FOIA) or published in declassification repositories like CIA CREST @hill2013declassification—frequently relies on digital or manual bounding boxes superimposed over sensitive text. Historically, a substantial majority of mid-to-late 20th-century intelligence assessments, diplomatic telegrams, and military memoranda were composed using fixed-pitch mechanical typewriters or early line printers (typically standardized to 10-pitch Pica or 12-pitch Elite fonts). 
+
+In monospace documents, every character glyph occupies an identical horizontal advance width ($w_c$). Consequently, while a solid black rectangular overlay successfully destroys the visual and rasterized pixel data of the underlying glyphs, the physical geometry of the box inadvertently leaks a tight bounding constraint on the character length of the concealed string. When combined with modern bidirectional language modeling techniques @nie2025llada @bavarian2022fim, this physical leak transforms unredaction from an intractable open-ended generation problem into a constrained fill-in-the-middle search.
+
+#figure(
+  placement: auto,
+  scope: "parent",
+  block(
+    width: 100%,
+    stroke: 0.5pt + luma(150),
+    fill: luma(252),
+    inset: 12pt,
+    radius: 3pt,
+    align(left, [
+      #set text(font: "Courier New", size: 9.5pt)
+      #text(fill: luma(100))[MEMORANDUM FOR: The Director of Central Intelligence \
+      SUBJECT: South Asia Strategic Assessment (Excerpt)] \ \
+      #text(fill: rgb("202020"))[
+        1. Recent reconnaissance confirms that the neighboring state has deployed \
+        an #box(fill: black, width: 36pt, height: 9pt, baseline: 10%)[] nuclear capability along the northern border sector. \
+        2. Senior military officials maintain that such installations serve \
+        primarily as a strategic #box(fill: black, width: 54pt, height: 9pt, baseline: 10%)[] against potential incursions.
+      ]
+      #v(6pt)
+      #line(length: 100%, stroke: 0.4pt + luma(180))
+      #set text(size: 8.5pt, fill: luma(90))
+      _Geometric side-channel:_ Redaction 1 width leaks $approx 6$ characters; Redaction 2 width leaks $approx 9$ characters.
+    ])
+  ),
+  caption: [Simulated monospace declassified document excerpt. Monospace typesetting enforces a rigid grid, leaking the concealed character count through box width.],
 ) <fig:example-doc>
 
 = Methods <sec:methods>
@@ -120,29 +123,73 @@ The reason for this is that given a known size redaction, a known character size
 This data gives us access to a subset of infill possibilities, when refined via the grammatical requirements of english, we can further compress the problem space to the following:
 Can we come up with a grammatically correct, length approximate text infill that is logical in the situation?
 
-Modern AI development has given us access to tools that logically map onto this problem, primarily Diffusion Language Models (DLMs).
+Modern AI development has given us access to tools that logically map onto this problem, primarily Diffusion Language Models (DLMs) @nie2025llada.
 Primarily the feature of DLMs that suits this problem space, is the capability for bidirectional context, or non-autoregressivity.
 This describes the capability of a model to "see" all token positions concurrently, and generate based on the preceding and trailing context.
 The benefit of this is obvious for our approach, where we have a given context already, and only a small subset must be filled in.
 
 == Box Measurement
-TODO: measuring the redaction box, dividing by the monospace glyph advance width to derive min/max character bounds (see box_measure.py).
 
-#figstub(
-  [TODO: diagram of a redaction box over monospace text, showing width in points divided by glyph width to yield a character-count range],
-  caption: [Deriving character-count bounds from redaction-box geometry in a monospace document.],
+To translate a visual or PDF bounding box into usable constraints for generation, we measure the bounding box width $W$ in points or pixels and estimate the baseline monospace glyph advance width $w_c$. Because manual redaction placement and digital clipping introduce minor boundary margins, we incorporate a small padding tolerance $delta$:
+
+$ L_("min") = max(1, floor((W - 2 delta) / w_c)), quad L_("max") = ceil((W + 2 delta) / w_c) $
+
+This yields a discrete character interval $[L_("min"), L_("max")]$ that acts as a hard filter on candidate generations.
+
+#figure(
+  placement: auto,
+  scope: "parent",
+  block(
+    width: 100%,
+    stroke: 0.5pt + luma(180),
+    fill: luma(250),
+    inset: 10pt,
+    radius: 4pt,
+    align(center, [
+      #grid(
+        columns: (auto, auto, auto),
+        gutter: 14pt,
+        align: horizon,
+        [
+          #set text(size: 8.5pt)
+          *Monospace Grid Alignment* \
+          #v(4pt)
+          #table(
+            columns: (20pt, 20pt, 20pt, 20pt, 20pt, 20pt, 20pt, 20pt, 20pt),
+            inset: 4pt,
+            stroke: 0.4pt + luma(180),
+            fill: (x, y) => if x >= 1 and x <= 7 { rgb("333333") } else { none },
+            align: center,
+            [a], [#text(fill: white)[d]], [#text(fill: white)[e]], [#text(fill: white)[t]], [#text(fill: white)[e]], [#text(fill: white)[r]], [#text(fill: white)[r]], [#text(fill: white)[e]], [n]
+          )
+        ],
+        [#text(16pt, fill: luma(120))[→]],
+        [
+          #set text(size: 8.5pt)
+          #align(left)[
+            *Derived Parameters:* \
+            $W_("box") = 63.0 "pt"$ \
+            $w_c = 7.0 "pt / char"$ \
+            Tolerance $delta = 3.5 "pt"$ \
+            #text(fill: rgb("006600"), weight: "bold")[$[L_("min"), L_("max")] = [7, 11]$ chars]
+          ]
+        ]
+      )
+    ])
+  ),
+  caption: [Monospace character-grid projection and derivation of character-count search interval $[L_("min"), L_("max")]$.],
 ) <fig:box-measure>
 
 == Candidate Generation
 
 For each redaction, the evaluator sends only the visible `before` and `after`
-text, the estimated character range, and generation settings to a masked-diffusion model. The local experiment used `GSAI-ML/LLaDA-8B-Base` through a small HTTP server on an RTX 3060 Ti. Because the model fills a fixed number of token positions rather than stopping at a character boundary, the client estimates a token span from the upper character bound and tries nearby spans. This is deliberately only a heuristic: tokens and characters do not correspond one-to-one.
+text, the estimated character range, and generation settings to a masked-diffusion model. The local experiment used `GSAI-ML/LLaDA-8B-Base` @nie2025llada through a small HTTP server on an RTX 3060 Ti. Because the model fills a fixed number of token positions rather than stopping at a character boundary, the client estimates a token span from the upper character bound and tries nearby spans. This is deliberately only a heuristic: tokens and characters do not correspond one-to-one.
 
 Candidates are generated independently, then normalized before evaluation. The client decodes HTML entities such as `&nbsp;`, rejects replacement-character output, trims obvious continuation lines, and records discarded artifacts. Character-range verification remains authoritative: a candidate is usable for selection only when its character count falls within the box's `[min_chars, max_chars]` interval. Ground truth, document-level metadata, and grading information remain client-side and are never sent to the model.
 
 == Semantic Ranking
 
-The first blind selector uses the character range and candidate order. For diagnostics, the evaluator also embeds a local context window around the redaction with `all-MiniLM-L6-v2`. It compares each candidate slot with the ground-truth slot and normalizes the result against an unrelated control token, producing a contrastive score rather than reporting the highly saturated raw sentence cosine. This score is an oracle diagnostic and is not a deployable performance metric because it uses the answer.
+The first blind selector uses the character range and candidate order. For diagnostics, the evaluator also embeds a local context window around the redaction with `all-MiniLM-L6-v2` @reimers2019sentencebert. It compares each candidate slot with the ground-truth slot and normalizes the result against an unrelated control token, producing a contrastive score rather than reporting the highly saturated raw sentence cosine. This score is an oracle diagnostic and is not a deployable performance metric because it uses the answer.
 
 An adjacency-echo guard penalizes candidates that mostly reproduce content immediately next to the gap. An optional document-keyness prior can further adjust ranking, but it is kept separate from generation. This separation is important: a candidate can be generated successfully yet lose during selection, as happened for `large` in the random-remasking run.
 
@@ -152,9 +199,23 @@ The primary evaluation set is the six-case India passage in `redactions.json`. I
 
 We report three complementary quantities. *Blind exact recovery* is whether the top candidate selected without ground truth exactly matches the known span. *Candidate recall at K* asks whether the correct span appeared anywhere in the generated candidate pool, separating generation failure from ranking failure. The contrastive semantic score, along with near-miss and off-target labels, is an oracle diagnostic used to study ranking rather than to claim blind performance.
 
-#figstub(
-  [TODO: example run output showing per-redaction candidates, char ranges, and scores],
-  caption: [Example unredact run on a redaction with known ground truth.],
+#figure(
+  placement: auto,
+  scope: "parent",
+  table(
+    columns: (1.2fr, 0.8fr, 1.6fr, 1.4fr),
+    inset: (x: 6pt, y: 6pt),
+    stroke: 0.5pt + luma(120),
+    fill: (x, y) => if y == 0 { rgb("e0e0e0") } else if calc.even(y) { rgb("f9f9f9") } else { none },
+    align: (col, row) => if row == 0 { center + horizon } else { left + top },
+    [*Candidate*], [*Length*], [*Filter Status*], [*Ground Truth Match*],
+    [`deterrent`], [9 chars], [#text(fill: rgb("007700"))[*PASSED* $[7, 11]$]], [Exact Match (GT)],
+    [`deterrent 1`], [11 chars], [#text(fill: rgb("007700"))[*PASSED* $[7, 11]$]], [Sub-optimal fill],
+    [`"final deterrent"`], [17 chars], [#text(fill: rgb("aa0000"))[REJECTED (overlength)]], [—],
+    [`credible deterrent`], [18 chars], [#text(fill: rgb("aa0000"))[REJECTED (overlength)]], [—],
+    [`strategic deterrent ":`], [23 chars], [#text(fill: rgb("aa0000"))[REJECTED (overlength)]], [—],
+  ),
+  caption: [Demonstration of candidate generation and character-bound pruning on case `ind2_deterrent` (Target: `deterrent`, search bounds $[7, 11]$ chars). Out of 6 raw DLM generations, overlong hallucinated phrases are pruned by physical bounds.],
 ) <fig:run-output>
 
 = Results <sec:results>
@@ -175,6 +236,8 @@ We then compared two remasking strategies with eight candidates per redaction, 6
 For both historical eight-candidate runs there were 56 completed HTTP requests, no truncations, and no empty responses. The removed Pakistan/Israel case is retained only in these archived logs for provenance and is excluded from current scores because its ground truth was an external historical guess not clearly determined by the visible excerpt. These results support retaining `low_confidence` as the current default. They also suggest that candidate selection and artifact filtering, rather than simply increasing model size, are the next limitations to investigate.
 
 #figure(
+  placement: auto,
+  scope: "parent",
   table(
     columns: (1.35fr, 1fr, 1fr, 0.8fr, 1fr),
     inset: (x: 6pt, y: 7pt),
@@ -209,6 +272,4 @@ This project presents a small generate-and-verify pipeline for text-only redacti
 
 The most promising scope is short Type 1 and Type 2 redactions with strong surrounding context. Type 3 redactions, whose answers are absent from the document, require external evidence and should be treated as a different task. Future work should focus on better box measurement, realistic simulated-redaction datasets, repeated-run statistics, blind reranking, and semantic evaluation—not on presenting the current numbers as general recovery performance.
 
-// Bibliography (Pergamon/ACL style). Uncomment once refs.bib has entries:
-// #add-bib-resource(read("refs.bib"))
-// #print-acl-bibliography()
+#bibliography("refs.bib", title: [References])

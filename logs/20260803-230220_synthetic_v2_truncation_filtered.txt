@@ -1,0 +1,157 @@
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 2 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 2 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 2 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM candidates empty/out-of-range; adding chat candidates
+======================================================================
+redaction: south_asia_assessment_span1_regional_partner  chars [14, 18]
+  ground truth: "regional partner"
+  [blind] best candidate: "the border force" (not exact); candidate_recall@K=miss
+  [FIT ] chars=16  |the border force|
+  [FIT ] chars=17  |border force near|
+  [FIT ] chars=15  |border crossing|
+  [FIT ] chars=14  |border control|
+  [    ] chars=31  (char range!)  |" the border units" in the text|
+  [    ] chars=93  (char range!)  |"border units" without providing a clear definition or context for what these units represent|
+  [    ] chars=143  (char range!)  |"border units" without providing a clear definition or context for what these units represent in terms of the map's scale or measurement system|
+  [result] no exact match | best candidate: "the border force" | char-sim to GT: 19%
+======================================================================
+redaction: south_asia_assessment_span2_border_force  chars [10, 13]
+  ground truth: "border force"
+  [blind] best candidate: "nother map" (not exact); candidate_recall@K=miss
+  [FIT ] chars=10  |nother map|
+  [    ] chars=31  (char range!)  |the of the near that is located|
+  [    ] chars=72  (char range!)  |different annex in the same document). The map is centered on the region|
+  [result] no exact match | best candidate: "nother map" | char-sim to GT: 36%
+======================================================================
+redaction: south_asia_assessment_span3_india  chars [4, 6]
+  note: The facility and regional constraint narrow the country answer; the name is not repeated.
+  ground truth: "India"
+  [blind] best candidate: "India" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=5  == GT  |India|
+  [    ] chars=44  (char range!)  |made, and the launch will proceed as planned|
+  [result] EXACT MATCH | best candidate: "India" | char-sim to GT: 100%
+======================================================================
+redaction: south_asia_assessment_span4_ambassador_rao  chars [12, 15]
+  note: The document gives no internal evidence identifying the ambassador.
+  ground truth: "Ambassador Rao"
+  [blind] best candidate: "the secretariat" (not exact); candidate_recall@K=miss
+  [FIT ] chars=15  |the secretariat|
+  [FIT ] chars=15  |the Ministry of|
+  [FIT ] chars=12  |the Ministry|
+  [FIT ] chars=15  |the senior team|
+  [    ] chars=10  (char range!)  |the system|
+  [    ] chars=109  (char range!)  |the Indian government, which is not identified in the given text. The decision was made by a person named "X"|
+  [result] no exact match | best candidate: "the secretariat" | char-sim to GT: 21%
+======================================================================
+redaction: south_asia_assessment_span5_defensive  chars [8, 11]
+  note: The inspection condition constrains the policy characterization.
+  ground truth: "defensive"
+  [blind] best candidate: "successful" (not exact); candidate_recall@K=miss
+  [FIT ] chars=10  |successful|
+  [    ] chars=27  (char range!)  |subject to a security check|
+  [    ] chars=139  (char range!)  |subject to inspection by the recipient and any findings of such inspection would be reported to the sender. The transfer would be completed|
+  [result] no exact match | best candidate: "successful" | char-sim to GT: 21%
+======================================================================
+redaction: arctic_shipping_span1_sea_ice  chars [6, 8]
+  ground truth: "sea ice"
+  [blind] best candidate: "the ice" (not exact); candidate_recall@K=miss
+  [FIT ] chars=7  |the ice|
+  [    ] chars=76  (char range!)  |the eastern convoy will continue to experience delays, but that these delays|
+  [    ] chars=102  (char range!)  |the eastern convoy will continue to experience delays due to the same factors, with the southern route|
+  [result] no exact match | best candidate: "the ice" | char-sim to GT: 71%
+======================================================================
+redaction: arctic_shipping_span2_northern_route  chars [12, 15]
+  ground truth: "northern route"
+  [blind] best candidate: "weather station" (not exact); candidate_recall@K=miss
+  [FIT ] chars=15  |weather station|
+  [    ] chars=6  (char range!)  |flight|
+  [    ] chars=5  (char range!)  |plant|
+  [result] no exact match | best candidate: "weather station" | char-sim to GT: 41%
+======================================================================
+redaction: arctic_shipping_span3_icebreaker_escort  chars [15, 19]
+  note: The contrast with a cargo manifest and late freeze constrains the operational response.
+  ground truth: "icebreaker escort"
+  [blind] best candidate: "emergency landing" (not exact); candidate_recall@K=miss
+  [FIT ] chars=17  |emergency landing|
+  [FIT ] chars=17  |emergency measure|
+  [FIT ] chars=16  |alternative plan|
+  [FIT ] chars=19  |reasonable solution|
+  [    ] chars=25  (char range!)  |emergency cargo manifest,|
+  [    ] chars=77  (char range!)  |appropriate choice for the given scenario, as it is more specific and concise|
+  [    ] chars=143  (char range!)  |a cargo the of, rather than freeze a larger manifest would,. The report would focus on the impact of the late freeze on the current cargo load,|
+  [result] no exact match | best candidate: "emergency landing" | char-sim to GT: 29%
+======================================================================
+redaction: arctic_shipping_span4_captain_sorensen  chars [14, 17]
+  note: Unique approving officer with no other identifying information.
+  ground truth: "Captain Sorensen"
+  [blind] best candidate: "Captain J. James" (not exact); candidate_recall@K=miss
+  [FIT ] chars=16  |Captain J. James|
+  [FIT ] chars=16  |Captain John Doe|
+  [FIT ] chars=15  |Commander Jones|
+  [FIT ] chars=15  |Captain Johnson|
+  [    ] chars=11  (char range!)  |the captain|
+  [result] no exact match | best candidate: "Captain J. James" | char-sim to GT: 62%
+======================================================================
+redaction: arctic_shipping_span5_stable  chars [5, 7]
+  note: The continuation condition constrains the required weather property.
+  ground truth: "stable"
+  [blind] best candidate: "intact" (not exact); candidate_recall@K=hit
+  [FIT ] chars=6  |intact|
+  [FIT ] chars=6  == GT  |stable|
+  [FIT ] chars=5  |still|
+  [FIT ] chars=7  |for now|
+  [    ] chars=53  (char range!)  |open, with a 10% chance of mechanical failure per day|
+  [    ] chars=101  (char range!)  |open for a few more minutes after the storm passed, but no one came forward to claim their belongings|
+  [result] EXACT MATCH | best candidate: "stable" | char-sim to GT: 100%
+======================================================================
+ORACLE DIAGNOSTIC (uses ground truth; not blind performance)
+  south_asia_assessment_span1_regional_partner: GT "regional partner" -> best "the border force" (?)
+  south_asia_assessment_span2_border_force: GT "border force" -> best "nother map" (?)
+  south_asia_assessment_span3_india: GT "India" -> best "India" (EXACT)
+  south_asia_assessment_span4_ambassador_rao: GT "Ambassador Rao" -> best "the secretariat" (?)
+  south_asia_assessment_span5_defensive: GT "defensive" -> best "successful" (?)
+  arctic_shipping_span1_sea_ice: GT "sea ice" -> best "the ice" (?)
+  arctic_shipping_span2_northern_route: GT "northern route" -> best "weather station" (?)
+  arctic_shipping_span3_icebreaker_escort: GT "icebreaker escort" -> best "emergency landing" (?)
+  arctic_shipping_span4_captain_sorensen: GT "Captain Sorensen" -> best "Captain J. James" (?)
+  arctic_shipping_span5_stable: GT "stable" -> best "stable" (EXACT)
+======================================================================
+BLIND BASELINE: exact=1/10  candidate_recall@K=2/10  (selection uses char range + generator order only)
+  paper_type=1: blind_exact=0/4  candidate_recall@K=0/4
+  paper_type=2: blind_exact=0/2  candidate_recall@K=0/2
+  paper_type=3: blind_exact=1/4  candidate_recall@K=2/4
+GENERATION DIAGNOSTICS (truncated responses are discarded)
+  api_attempts=102  http_responses=102  truncated=20  fim_truncated=20  chat_truncated=0  empty_responses=0  artifact_filtered=2  usable_candidates=45  fim_usable=23  chat_usable=22  fallback_chat=7

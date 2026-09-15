@@ -46,7 +46,9 @@ CSV_FIELDS = [
     "full_pool", "loosen", "tightness_sweep", "no_length_hint", "fim_only",
     "exact", "near_miss", "off_target", "mean_score", "metric",
     "blind_exact", "candidate_recall_at_k", "blind_exact_rate",
-    "candidate_recall_rate", "llada_url", "llada_timeout", "llada_steps",
+    "candidate_recall_rate", "n_eff_enabled", "n_eff_mean", "n_eff_median", "n_eff_nonempty",
+    "n_eff_mean_all_candidates", "n_eff_mean_in_range_candidates",
+    "n_eff_mean_in_range_unique", "llada_url", "llada_timeout", "llada_steps",
     "llada_temperature", "llada_remasking", "llada_gen_length", "llada_block_length",
     "truncated", "fim_truncated", "chat_truncated",
     "empty_responses", "artifact_filtered", "fallback_chat", "fim_budget_min",
@@ -76,6 +78,16 @@ def _row_from_sidecar(ts, tag, data, rc=0, notes=""):
         for k in ("blind_exact", "candidate_recall_at_k", "blind_exact_rate",
                   "candidate_recall_rate"):
             row[k] = s.get(k)
+        n_eff = s.get("n_eff") or {}
+        row["n_eff_enabled"] = bool(m.get("n_eff", False))
+        row.update({
+            "n_eff_mean": n_eff.get("mean"),
+            "n_eff_median": n_eff.get("median"),
+            "n_eff_nonempty": n_eff.get("nonempty_in_range"),
+            "n_eff_mean_all_candidates": n_eff.get("mean_all_candidates"),
+            "n_eff_mean_in_range_candidates": n_eff.get("mean_in_range_candidates"),
+            "n_eff_mean_in_range_unique": n_eff.get("mean_in_range_unique"),
+        })
         generation = s.get("generation", {})
         for k in ("truncated", "fim_truncated", "chat_truncated",
                   "empty_responses", "artifact_filtered", "fallback_chat"):

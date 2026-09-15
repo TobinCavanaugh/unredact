@@ -1,19 +1,28 @@
-# Unredact MVP (manual-first, pure text)
+# Unredact
 
-Length-constrained infilling of redacted text using a diffusion LLM.
+[![Typst Paper](https://img.shields.io/badge/Paper-index.pdf-red.svg)](index.pdf)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-The idea: a redaction box leaks its length. We estimate how many characters
-fit in the box (from the box width and font metrics), generate candidate
-infills from a diffusion LLM given the surrounding document text, then keep
-only the candidates whose length fits. That generate-and-verify loop is the
-core contribution.
+**Unredact** is an experimental framework for reverse box-redaction in monospace declassified documents using the physical side-channel leak of bounding box character lengths combined with non-autoregressive Diffusion Language Models (DLMs) and semantic candidate verification.
 
-**Key finding so far: context is everything -- but the two Mercury modes want
-it differently.** Chat mode recovers far better when given the full surrounding
-text split at the gap. FIM mode (diffusion-native infill) chokes on long
-context (it returns a bare space when handed full paragraphs), so it is fed a
-short local window around the gap instead, and we pool candidates across
-window sizes and token budgets (the generate half of generate-and-verify).
+📄 **Read the Paper:** [**index.pdf**](index.pdf) (Written in Typst, ACL/TRACL template)
+
+---
+
+## 🎯 The Core Concept
+
+In monospace documents (such as FOIA releases, CIA CREST reading room files, and typewriter-era diplomatic telegrams), font glyphs have fixed advance widths. While a black box overlay destroys visual pixel data, its physical dimensions directly leak the character length bounds $[L_{\min}, L_{\max}]$.
+
+```text
+Visible Context (Prefix / Suffix) ──┐
+                                     ├──> DLM Infilling (LLaDA) ──> Character-Range Pruning ──> Semantic Ranking
+Leaked Box Geometry [L_min, L_max] ─┘
+```
+
+### Redaction Taxonomy
+1. **Type 1 (Juxtaposition / Coreference):** Redacted entity appears elsewhere in document. *Highly recoverable.*
+2. **Type 2 (Total Expungement):** Concept is purged from document, but constrained by grammar/local context. *Grammatically constrained.*
+3. **Type 3 (Constrained / Situational):** Absent entity requiring external domain knowledge. *Partial/Role-based recovery.*
 
 ## Quick start (tonight)
 
@@ -185,11 +194,11 @@ Useful validation commands, which do not require the LLaDA server, are:
 
 ```bash
 python validate_dataset.py
-python data/synthetic_v2/validate.pypython unredact.py --dry-run --redactions redactions.json
+python data/synthetic_v2/validate.py
+python unredact.py --dry-run --redactions redactions.json
 python unredact.py --dry-run --redactions redactions.json --n-eff
 python log_run.py n_eff --redactions redactions_broad.json --dry-run --n-eff --candidates 8
 typst compile index.typ index.pdf
-
 ```
 
 `--llada-steps` defaults to 64 and the client derives nearby token-span

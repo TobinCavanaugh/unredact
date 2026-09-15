@@ -1,0 +1,109 @@
+======================================================================
+redaction: south_asia_assessment_span1_regional_partner  chars [14, 18]
+  ground truth: "regional partner"
+  [blind] best candidate: "the border force" (not exact); candidate_recall@K=miss
+  [FIT ] chars=16  |the border force|
+  [FIT ] chars=15  |border security|
+  [FIT ] chars=17  |border force near|
+  [FIT ] chars=15  |the border zone|
+  [FIT ] chars=14  |the border map|
+  [result] no exact match | best candidate: "the border force" | char-sim to GT: 19%
+======================================================================
+redaction: south_asia_assessment_span2_border_force  chars [10, 13]
+  ground truth: "border force"
+  [blind] best candidate: "border force" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=12  == GT  |border force|
+  [FIT ] chars=12  |annex report|
+  [result] EXACT MATCH | best candidate: "border force" | char-sim to GT: 100%
+======================================================================
+redaction: south_asia_assessment_span3_india  chars [4, 6]
+  note: The facility and regional constraint narrow the country answer; the name is not repeated.
+  ground truth: "India"
+  [blind] best candidate: "India" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=5  == GT  |India|
+  [result] EXACT MATCH | best candidate: "India" | char-sim to GT: 100%
+======================================================================
+redaction: south_asia_assessment_span4_ambassador_rao  chars [12, 15]
+  note: The document gives no internal evidence identifying the ambassador.
+  ground truth: "Ambassador Rao"
+  [blind] best candidate: "the President" (not exact); candidate_recall@K=miss
+  [FIT ] chars=13  |the President|
+  [FIT ] chars=13  |the committee|
+  [FIT ] chars=12  |the Ministry|
+  [result] no exact match | best candidate: "the President" | char-sim to GT: 15%
+======================================================================
+redaction: south_asia_assessment_span5_defensive  chars [8, 11]
+  note: The inspection condition constrains the policy characterization.
+  ground truth: "defensive"
+  [blind] best candidate: "subject to" (not exact); candidate_recall@K=miss
+  [FIT ] chars=10  |subject to|
+  [FIT ] chars=11  |conditional|
+  [result] no exact match | best candidate: "subject to" | char-sim to GT: 21%
+======================================================================
+redaction: arctic_shipping_span1_sea_ice  chars [6, 8]
+  ground truth: "sea ice"
+  [blind] best candidate: "the ice" (not exact); candidate_recall@K=hit
+  [FIT ] chars=7  |the ice|
+  [FIT ] chars=7  == GT  |sea ice|
+  [FIT ] chars=8  |later on|
+  [result] EXACT MATCH | best candidate: "sea ice" | char-sim to GT: 100%
+======================================================================
+redaction: arctic_shipping_span2_northern_route  chars [12, 15]
+  ground truth: "northern route"
+  [blind] best candidate: "appendix says" (not exact); candidate_recall@K=miss
+  [FIT ] chars=13  |appendix says|
+  [FIT ] chars=14  |the ice status|
+  [FIT ] chars=14  |ice conditions|
+  [FIT ] chars=13  |crew must act|
+  [FIT ] chars=15  |requires a full|
+  [FIT ] chars=15  |the ship's crew|
+  [result] no exact match | best candidate: "appendix says" | char-sim to GT: 22%
+======================================================================
+redaction: arctic_shipping_span3_icebreaker_escort  chars [15, 19]
+  note: The contrast with a cargo manifest and late freeze constrains the operational response.
+  ground truth: "icebreaker escort"
+  [blind] best candidate: "emergency landing" (not exact); candidate_recall@K=miss
+  [FIT ] chars=17  |emergency landing|
+  [FIT ] chars=17  |acceptable option|
+  [FIT ] chars=16  |immediate action|
+  [FIT ] chars=16  |emergency action|
+  [FIT ] chars=19  |acceptable solution|
+  [FIT ] chars=19  |emergency procedure|
+  [result] no exact match | best candidate: "emergency landing" | char-sim to GT: 29%
+======================================================================
+redaction: arctic_shipping_span4_captain_sorensen  chars [14, 17]
+  note: Unique approving officer with no other identifying information.
+  ground truth: "Captain Sorensen"
+  [blind] best candidate: "Captain Johnson" (not exact); candidate_recall@K=miss
+  [FIT ] chars=15  |Captain Johnson|
+  [FIT ] chars=16  |Captain John Doe|
+  [FIT ] chars=15  |Commander Jones|
+  [result] no exact match | best candidate: "Captain Johnson" | char-sim to GT: 77%
+======================================================================
+redaction: arctic_shipping_span5_stable  chars [5, 7]
+  note: The continuation condition constrains the required weather property.
+  ground truth: "stable"
+  [blind] best candidate: "stable" (EXACT); candidate_recall@K=hit
+  [FIT ] chars=6  == GT  |stable|
+  [FIT ] chars=6  |intact|
+  [FIT ] chars=6  |and so|
+  [result] EXACT MATCH | best candidate: "stable" | char-sim to GT: 100%
+======================================================================
+ORACLE DIAGNOSTIC (uses ground truth; not blind performance)
+  south_asia_assessment_span1_regional_partner: GT "regional partner" -> best "the border force" (?)
+  south_asia_assessment_span2_border_force: GT "border force" -> best "border force" (EXACT)
+  south_asia_assessment_span3_india: GT "India" -> best "India" (EXACT)
+  south_asia_assessment_span4_ambassador_rao: GT "Ambassador Rao" -> best "the President" (?)
+  south_asia_assessment_span5_defensive: GT "defensive" -> best "subject to" (?)
+  arctic_shipping_span1_sea_ice: GT "sea ice" -> best "sea ice" (EXACT)
+  arctic_shipping_span2_northern_route: GT "northern route" -> best "appendix says" (?)
+  arctic_shipping_span3_icebreaker_escort: GT "icebreaker escort" -> best "emergency landing" (?)
+  arctic_shipping_span4_captain_sorensen: GT "Captain Sorensen" -> best "Captain Johnson" (?)
+  arctic_shipping_span5_stable: GT "stable" -> best "stable" (EXACT)
+======================================================================
+BLIND BASELINE: exact=3/10  candidate_recall@K=4/10  (selection uses char range + generator order only)
+  paper_type=1: blind_exact=1/4  candidate_recall@K=2/4
+  paper_type=2: blind_exact=0/2  candidate_recall@K=0/2
+  paper_type=3: blind_exact=2/4  candidate_recall@K=2/4
+GENERATION DIAGNOSTICS (truncated responses are discarded)
+  api_attempts=60  http_responses=60  truncated=0  fim_truncated=0  chat_truncated=0  empty_responses=0  artifact_filtered=0  usable_candidates=34  fim_usable=0  chat_usable=34  fallback_chat=0

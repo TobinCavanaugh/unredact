@@ -1,0 +1,750 @@
+{
+  "schema": "unredact-tightness-sweep/v1",
+  "meta": {
+    "timestamp": "2026-08-03T19:33:40+00:00",
+    "argv": [
+      "--redactions",
+      "redactions_broad.json",
+      "--backend",
+      "mercury",
+      "--semantic",
+      "--prior-weight",
+      "0.5",
+      "--tightness-sweep",
+      "0,3,5,10",
+      "--json-results",
+      "C:\\Users\\tobin\\Documents\\repos\\unredact\\logs\\20260803-193340_sweep.json"
+    ],
+    "redactions_file": "redactions_broad.json",
+    "backend": "mercury",
+    "mode": "fim",
+    "candidates": 6,
+    "full_pool": false,
+    "semantic": true,
+    "semantic_threshold": 0.7,
+    "semantic_control": "zzzzzz",
+    "semantic_window": 8,
+    "echo_penalty": 0.5,
+    "prior_weight": 0.5,
+    "loosen": 0,
+    "tightness_sweep": "0,3,5,10",
+    "dry_run": false,
+    "git_commit": "f3367e3"
+  },
+  "deltas": [
+    {
+      "delta": 0,
+      "n": 21,
+      "exact": 5,
+      "near_miss": 3,
+      "off_target": 13,
+      "mean_score": 0.6001672786630807
+    },
+    {
+      "delta": 3,
+      "n": 21,
+      "exact": 5,
+      "near_miss": 3,
+      "off_target": 13,
+      "mean_score": 0.6007589375874998
+    },
+    {
+      "delta": 5,
+      "n": 21,
+      "exact": 5,
+      "near_miss": 3,
+      "off_target": 13,
+      "mean_score": 0.6186011702707992
+    },
+    {
+      "delta": 10,
+      "n": 21,
+      "exact": 5,
+      "near_miss": 3,
+      "off_target": 13,
+      "mean_score": 0.6756461073214806
+    }
+  ],
+  "per_delta": {
+    "0": [
+      {
+        "id": "sov1_triad",
+        "ground_truth": "triad",
+        "best": "mission",
+        "exact": false,
+        "score": 0.4797848951573709,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov2_sea_based",
+        "ground_truth": "sea-based",
+        "best": "nuclear",
+        "exact": false,
+        "score": 0.4237403912340555,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov3_patrol",
+        "ground_truth": "patrol",
+        "best": "duty",
+        "exact": false,
+        "score": 0.7118923447323335,
+        "classification": "near-miss"
+      },
+      {
+        "id": "sov4_expanded",
+        "ground_truth": "expanded",
+        "best": "completed",
+        "exact": false,
+        "score": 0.6825199628935736,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov5_hardened_missile_silos",
+        "ground_truth": "hardened missile silos",
+        "best": "any target on Earth",
+        "exact": false,
+        "score": 0.515386254453468,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi1_solid_propellant_successor",
+        "ground_truth": "solid-propellant successor",
+        "best": "new generation of missiles",
+        "exact": false,
+        "score": 0.21800568108352728,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi2_no_first_use",
+        "ground_truth": "no first use",
+        "best": "no first use",
+        "exact": true,
+        "score": 1.0888888888888888,
+        "classification": "EXACT"
+      },
+      {
+        "id": "chi3_retaliation",
+        "ground_truth": "retaliation",
+        "best": "deterrence",
+        "exact": false,
+        "score": 0.34792761580165077,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi4_double",
+        "ground_truth": "double",
+        "best": "increase",
+        "exact": false,
+        "score": 0.6237073404958698,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi5_reentry_vehicles",
+        "ground_truth": "reentry vehicles",
+        "best": "units, or MCMs, will",
+        "exact": false,
+        "score": -0.34589848839514203,
+        "classification": "off-target"
+      },
+      {
+        "id": "gulf1_strait_of_hormuz",
+        "ground_truth": "Strait of Hormuz",
+        "best": "Strait of Hormuz",
+        "exact": true,
+        "score": 1.2407410110605452,
+        "classification": "EXACT"
+      },
+      {
+        "id": "gulf2_terminal",
+        "ground_truth": "terminal",
+        "best": "terminal",
+        "exact": true,
+        "score": 1.2042483660130718,
+        "classification": "EXACT"
+      },
+      {
+        "id": "gulf3_redundancy",
+        "ground_truth": "redundancy",
+        "best": "capacity",
+        "exact": false,
+        "score": 0.2978800994566719,
+        "classification": "off-target"
+      },
+      {
+        "id": "gulf4_strategic_petroleum_reserves",
+        "ground_truth": "strategic petroleum reserves",
+        "best": "combined oil reserves of",
+        "exact": false,
+        "score": 0.9585661207559926,
+        "classification": "near-miss"
+      },
+      {
+        "id": "gulf5_exhausted",
+        "ground_truth": "exhausted",
+        "best": "exhausted",
+        "exact": true,
+        "score": 1.2042490168280549,
+        "classification": "EXACT"
+      },
+      {
+        "id": "dprk1_sanctions",
+        "ground_truth": "sanctions",
+        "best": "community",
+        "exact": false,
+        "score": 0.12500183194575185,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk2_fissile_material",
+        "ground_truth": "fissile material",
+        "best": "fissile material",
+        "exact": true,
+        "score": 1.2499996290901618,
+        "classification": "EXACT"
+      },
+      {
+        "id": "dprk3_demonstrated",
+        "ground_truth": "demonstrated",
+        "best": "operational",
+        "exact": false,
+        "score": 0.7458485235938216,
+        "classification": "near-miss"
+      },
+      {
+        "id": "dprk4_longer_range_delivery_vehicle",
+        "ground_truth": "longer-range delivery vehicle",
+        "best": "test of a medium-range missile",
+        "exact": false,
+        "score": 0.516941058807203,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk5_uncertainty",
+        "ground_truth": "uncertainty",
+        "best": "concerns the",
+        "exact": false,
+        "score": 0.05318595307978935,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk6_iran",
+        "ground_truth": "Iran",
+        "best": "China",
+        "exact": false,
+        "score": 0.2608963549480338,
+        "classification": "off-target"
+      }
+    ],
+    "3": [
+      {
+        "id": "sov1_triad",
+        "ground_truth": "triad",
+        "best": "mission",
+        "exact": false,
+        "score": 0.4797848951573709,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov2_sea_based",
+        "ground_truth": "sea-based",
+        "best": "nuclear",
+        "exact": false,
+        "score": 0.4237403912340555,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov3_patrol",
+        "ground_truth": "patrol",
+        "best": "duty",
+        "exact": false,
+        "score": 0.7118923447323335,
+        "classification": "near-miss"
+      },
+      {
+        "id": "sov4_expanded",
+        "ground_truth": "expanded",
+        "best": "completed",
+        "exact": false,
+        "score": 0.6825199628935736,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov5_hardened_missile_silos",
+        "ground_truth": "hardened missile silos",
+        "best": "any U.S. target,",
+        "exact": false,
+        "score": 0.5249119717069552,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi1_solid_propellant_successor",
+        "ground_truth": "solid-propellant successor",
+        "best": "new generation of missiles",
+        "exact": false,
+        "score": 0.21800568108352728,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi2_no_first_use",
+        "ground_truth": "no first use",
+        "best": "no first use",
+        "exact": true,
+        "score": 1.0888888888888888,
+        "classification": "EXACT"
+      },
+      {
+        "id": "chi3_retaliation",
+        "ground_truth": "retaliation",
+        "best": "deterrence",
+        "exact": false,
+        "score": 0.34792761580165077,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi4_double",
+        "ground_truth": "double",
+        "best": "increase",
+        "exact": false,
+        "score": 0.6237073404958698,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi5_reentry_vehicles",
+        "ground_truth": "reentry vehicles",
+        "best": "units, or MCMs, will",
+        "exact": false,
+        "score": -0.34589848839514203,
+        "classification": "off-target"
+      },
+      {
+        "id": "gulf1_strait_of_hormuz",
+        "ground_truth": "Strait of Hormuz",
+        "best": "Strait of Hormuz",
+        "exact": true,
+        "score": 1.2407410110605452,
+        "classification": "EXACT"
+      },
+      {
+        "id": "gulf2_terminal",
+        "ground_truth": "terminal",
+        "best": "terminal",
+        "exact": true,
+        "score": 1.2042483660130718,
+        "classification": "EXACT"
+      },
+      {
+        "id": "gulf3_redundancy",
+        "ground_truth": "redundancy",
+        "best": "capacity",
+        "exact": false,
+        "score": 0.2978800994566719,
+        "classification": "off-target"
+      },
+      {
+        "id": "gulf4_strategic_petroleum_reserves",
+        "ground_truth": "strategic petroleum reserves",
+        "best": "combined oil reserves of",
+        "exact": false,
+        "score": 0.9585661207559926,
+        "classification": "near-miss"
+      },
+      {
+        "id": "gulf5_exhausted",
+        "ground_truth": "exhausted",
+        "best": "exhausted",
+        "exact": true,
+        "score": 1.2042490168280549,
+        "classification": "EXACT"
+      },
+      {
+        "id": "dprk1_sanctions",
+        "ground_truth": "sanctions",
+        "best": "community",
+        "exact": false,
+        "score": 0.12500183194575185,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk2_fissile_material",
+        "ground_truth": "fissile material",
+        "best": "fissile material",
+        "exact": true,
+        "score": 1.2499996290901618,
+        "classification": "EXACT"
+      },
+      {
+        "id": "dprk3_demonstrated",
+        "ground_truth": "demonstrated",
+        "best": "operational",
+        "exact": false,
+        "score": 0.7458485235938216,
+        "classification": "near-miss"
+      },
+      {
+        "id": "dprk4_longer_range_delivery_vehicle",
+        "ground_truth": "longer-range delivery vehicle",
+        "best": "test of a medium-range missile",
+        "exact": false,
+        "score": 0.516941058807203,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk5_uncertainty",
+        "ground_truth": "uncertainty",
+        "best": "concerns",
+        "exact": false,
+        "score": 0.05608507323910439,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk6_iran",
+        "ground_truth": "Iran",
+        "best": "China",
+        "exact": false,
+        "score": 0.2608963549480338,
+        "classification": "off-target"
+      }
+    ],
+    "5": [
+      {
+        "id": "sov1_triad",
+        "ground_truth": "triad",
+        "best": "mission",
+        "exact": false,
+        "score": 0.4797848951573709,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov2_sea_based",
+        "ground_truth": "sea-based",
+        "best": "nuclear",
+        "exact": false,
+        "score": 0.4237403912340555,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov3_patrol",
+        "ground_truth": "patrol",
+        "best": "duty",
+        "exact": false,
+        "score": 0.7118923447323335,
+        "classification": "near-miss"
+      },
+      {
+        "id": "sov4_expanded",
+        "ground_truth": "expanded",
+        "best": "completed",
+        "exact": false,
+        "score": 0.6825199628935736,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov5_hardened_missile_silos",
+        "ground_truth": "hardened missile silos",
+        "best": "any U.S. target,",
+        "exact": false,
+        "score": 0.5249119717069552,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi1_solid_propellant_successor",
+        "ground_truth": "solid-propellant successor",
+        "best": "new generation of missiles",
+        "exact": false,
+        "score": 0.21800568108352728,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi2_no_first_use",
+        "ground_truth": "no first use",
+        "best": "no first use",
+        "exact": true,
+        "score": 1.0888888888888888,
+        "classification": "EXACT"
+      },
+      {
+        "id": "chi3_retaliation",
+        "ground_truth": "retaliation",
+        "best": "deterrence",
+        "exact": false,
+        "score": 0.34792761580165077,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi4_double",
+        "ground_truth": "double",
+        "best": "increase",
+        "exact": false,
+        "score": 0.6237073404958698,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi5_reentry_vehicles",
+        "ground_truth": "reentry vehicles",
+        "best": "units, or MCMs, will",
+        "exact": false,
+        "score": -0.34589848839514203,
+        "classification": "off-target"
+      },
+      {
+        "id": "gulf1_strait_of_hormuz",
+        "ground_truth": "Strait of Hormuz",
+        "best": "Strait of Hormuz",
+        "exact": true,
+        "score": 1.2407410110605452,
+        "classification": "EXACT"
+      },
+      {
+        "id": "gulf2_terminal",
+        "ground_truth": "terminal",
+        "best": "terminal",
+        "exact": true,
+        "score": 1.2042483660130718,
+        "classification": "EXACT"
+      },
+      {
+        "id": "gulf3_redundancy",
+        "ground_truth": "redundancy",
+        "best": "capacity",
+        "exact": false,
+        "score": 0.2978800994566719,
+        "classification": "off-target"
+      },
+      {
+        "id": "gulf4_strategic_petroleum_reserves",
+        "ground_truth": "strategic petroleum reserves",
+        "best": "combined oil reserves of",
+        "exact": false,
+        "score": 0.9585661207559926,
+        "classification": "near-miss"
+      },
+      {
+        "id": "gulf5_exhausted",
+        "ground_truth": "exhausted",
+        "best": "exhausted",
+        "exact": true,
+        "score": 1.2042490168280549,
+        "classification": "EXACT"
+      },
+      {
+        "id": "dprk1_sanctions",
+        "ground_truth": "sanctions",
+        "best": "community",
+        "exact": false,
+        "score": 0.12500183194575185,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk2_fissile_material",
+        "ground_truth": "fissile material",
+        "best": "fissile material",
+        "exact": true,
+        "score": 1.2499996290901618,
+        "classification": "EXACT"
+      },
+      {
+        "id": "dprk3_demonstrated",
+        "ground_truth": "demonstrated",
+        "best": "operational",
+        "exact": false,
+        "score": 0.7458485235938216,
+        "classification": "near-miss"
+      },
+      {
+        "id": "dprk4_longer_range_delivery_vehicle",
+        "ground_truth": "longer-range delivery vehicle",
+        "best": "test of a medium-range missile",
+        "exact": false,
+        "score": 0.516941058807203,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk5_uncertainty",
+        "ground_truth": "uncertainty",
+        "best": "here",
+        "exact": false,
+        "score": 0.43077195958839,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk6_iran",
+        "ground_truth": "Iran",
+        "best": "China",
+        "exact": false,
+        "score": 0.2608963549480338,
+        "classification": "off-target"
+      }
+    ],
+    "10": [
+      {
+        "id": "sov1_triad",
+        "ground_truth": "triad",
+        "best": "nuclear deterrent",
+        "exact": false,
+        "score": 0.5396948943091692,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov2_sea_based",
+        "ground_truth": "sea-based",
+        "best": "nuclear",
+        "exact": false,
+        "score": 0.4237403912340555,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov3_patrol",
+        "ground_truth": "patrol",
+        "best": "duty",
+        "exact": false,
+        "score": 0.7118923447323335,
+        "classification": "near-miss"
+      },
+      {
+        "id": "sov4_expanded",
+        "ground_truth": "expanded",
+        "best": "completed",
+        "exact": false,
+        "score": 0.6825199628935736,
+        "classification": "off-target"
+      },
+      {
+        "id": "sov5_hardened_missile_silos",
+        "ground_truth": "hardened missile silos",
+        "best": "any U.S. target,",
+        "exact": false,
+        "score": 0.5249119717069552,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi1_solid_propellant_successor",
+        "ground_truth": "solid-propellant successor",
+        "best": "new generation of missiles",
+        "exact": false,
+        "score": 0.21800568108352728,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi2_no_first_use",
+        "ground_truth": "no first use",
+        "best": "no first use",
+        "exact": true,
+        "score": 1.0888888888888888,
+        "classification": "EXACT"
+      },
+      {
+        "id": "chi3_retaliation",
+        "ground_truth": "retaliation",
+        "best": "deterrence",
+        "exact": false,
+        "score": 0.34792761580165077,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi4_double",
+        "ground_truth": "double",
+        "best": "increase",
+        "exact": false,
+        "score": 0.6237073404958698,
+        "classification": "off-target"
+      },
+      {
+        "id": "chi5_reentry_vehicles",
+        "ground_truth": "reentry vehicles",
+        "best": "units",
+        "exact": false,
+        "score": 0.27710509963407004,
+        "classification": "off-target"
+      },
+      {
+        "id": "gulf1_strait_of_hormuz",
+        "ground_truth": "Strait of Hormuz",
+        "best": "Strait of Hormuz",
+        "exact": true,
+        "score": 1.2407410110605452,
+        "classification": "EXACT"
+      },
+      {
+        "id": "gulf2_terminal",
+        "ground_truth": "terminal",
+        "best": "terminal",
+        "exact": true,
+        "score": 1.2042483660130718,
+        "classification": "EXACT"
+      },
+      {
+        "id": "gulf3_redundancy",
+        "ground_truth": "redundancy",
+        "best": "capacity",
+        "exact": false,
+        "score": 0.2978800994566719,
+        "classification": "off-target"
+      },
+      {
+        "id": "gulf4_strategic_petroleum_reserves",
+        "ground_truth": "strategic petroleum reserves",
+        "best": "combined oil reserves of",
+        "exact": false,
+        "score": 0.9585661207559926,
+        "classification": "near-miss"
+      },
+      {
+        "id": "gulf5_exhausted",
+        "ground_truth": "exhausted",
+        "best": "exhausted",
+        "exact": true,
+        "score": 1.2042490168280549,
+        "classification": "EXACT"
+      },
+      {
+        "id": "dprk1_sanctions",
+        "ground_truth": "sanctions",
+        "best": "warnings and sanctions",
+        "exact": false,
+        "score": 0.6400319228290503,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk2_fissile_material",
+        "ground_truth": "fissile material",
+        "best": "fissile material",
+        "exact": true,
+        "score": 1.2499996290901618,
+        "classification": "EXACT"
+      },
+      {
+        "id": "dprk3_demonstrated",
+        "ground_truth": "demonstrated",
+        "best": "operational",
+        "exact": false,
+        "score": 0.7458485235938216,
+        "classification": "near-miss"
+      },
+      {
+        "id": "dprk4_longer_range_delivery_vehicle",
+        "ground_truth": "longer-range delivery vehicle",
+        "best": "test of a medium-range missile",
+        "exact": false,
+        "score": 0.516941058807203,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk5_uncertainty",
+        "ground_truth": "uncertainty",
+        "best": "here",
+        "exact": false,
+        "score": 0.43077195958839,
+        "classification": "off-target"
+      },
+      {
+        "id": "dprk6_iran",
+        "ground_truth": "Iran",
+        "best": "China",
+        "exact": false,
+        "score": 0.2608963549480338,
+        "classification": "off-target"
+      }
+    ]
+  }
+}

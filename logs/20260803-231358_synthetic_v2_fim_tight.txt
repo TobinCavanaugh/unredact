@@ -1,0 +1,138 @@
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM-only: no in-range candidate; skipping chat fallback
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 2 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM-only: no in-range candidate; skipping chat fallback
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM-only: no in-range candidate; skipping chat fallback
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 2 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM-only: no in-range candidate; skipping chat fallback
+  [mercury] FIM pooled 3 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM-only: no in-range candidate; skipping chat fallback
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM-only: no in-range candidate; skipping chat fallback
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] candidate truncated by max_tokens budget (discarded)
+  [mercury] FIM pooled 1 usable candidate(s) (wanted 6, 6 attempt(s)); artifacts filtered
+  [mercury] FIM-only: no in-range candidate; skipping chat fallback
+======================================================================
+redaction: south_asia_assessment_span1_regional_partner  chars [14, 18]
+  ground truth: "regional partner"
+  [blind] best candidate: "" the border units" in the text" (not exact); candidate_recall@K=miss
+  [    ] chars=31  (char range!)  |" the border units" in the text|
+  [result] no exact match | best candidate: "" the border units" in the text" | char-sim to GT: 17%
+======================================================================
+redaction: south_asia_assessment_span2_border_force  chars [10, 13]
+  ground truth: "border force"
+  [blind] best candidate: "nother map" (not exact); candidate_recall@K=miss
+  [FIT ] chars=10  |nother map|
+  [    ] chars=31  (char range!)  |the of the near that is located|
+  [result] no exact match | best candidate: "nother map" | char-sim to GT: 36%
+======================================================================
+redaction: south_asia_assessment_span3_india  chars [4, 6]
+  note: The facility and regional constraint narrow the country answer; the name is not repeated.
+  ground truth: "India"
+  [blind] best candidate: "made, and the launch will proceed as planned" (not exact); candidate_recall@K=miss
+  [    ] chars=44  (char range!)  |made, and the launch will proceed as planned|
+  [result] no exact match | best candidate: "made, and the launch will proceed as planned" | char-sim to GT: 12%
+======================================================================
+redaction: south_asia_assessment_span4_ambassador_rao  chars [12, 15]
+  note: The document gives no internal evidence identifying the ambassador.
+  ground truth: "Ambassador Rao"
+  [blind] best candidate: "the system" (not exact); candidate_recall@K=miss
+  [    ] chars=10  (char range!)  |the system|
+  [result] no exact match | best candidate: "the system" | char-sim to GT: 8%
+======================================================================
+redaction: south_asia_assessment_span5_defensive  chars [8, 11]
+  note: The inspection condition constrains the policy characterization.
+  ground truth: "defensive"
+  [blind] best candidate: "successful" (not exact); candidate_recall@K=miss
+  [FIT ] chars=10  |successful|
+  [    ] chars=27  (char range!)  |subject to a security check|
+  [result] no exact match | best candidate: "successful" | char-sim to GT: 21%
+======================================================================
+redaction: arctic_shipping_span1_sea_ice  chars [6, 8]
+  ground truth: "sea ice"
+  [blind] best candidate: "" (not exact); candidate_recall@K=miss
+  [result] no exact match | best candidate: "" | char-sim to GT: 0%
+======================================================================
+redaction: arctic_shipping_span2_northern_route  chars [12, 15]
+  ground truth: "northern route"
+  [blind] best candidate: "weather station" (not exact); candidate_recall@K=miss
+  [FIT ] chars=15  |weather station|
+  [    ] chars=6  (char range!)  |flight|
+  [    ] chars=5  (char range!)  |plant|
+  [result] no exact match | best candidate: "weather station" | char-sim to GT: 41%
+======================================================================
+redaction: arctic_shipping_span3_icebreaker_escort  chars [15, 19]
+  note: The contrast with a cargo manifest and late freeze constrains the operational response.
+  ground truth: "icebreaker escort"
+  [blind] best candidate: "emergency cargo manifest," (not exact); candidate_recall@K=miss
+  [    ] chars=25  (char range!)  |emergency cargo manifest,|
+  [result] no exact match | best candidate: "emergency cargo manifest," | char-sim to GT: 33%
+======================================================================
+redaction: arctic_shipping_span4_captain_sorensen  chars [14, 17]
+  note: Unique approving officer with no other identifying information.
+  ground truth: "Captain Sorensen"
+  [blind] best candidate: "the captain" (not exact); candidate_recall@K=miss
+  [    ] chars=11  (char range!)  |the captain|
+  [result] no exact match | best candidate: "the captain" | char-sim to GT: 52%
+======================================================================
+redaction: arctic_shipping_span5_stable  chars [5, 7]
+  note: The continuation condition constrains the required weather property.
+  ground truth: "stable"
+  [blind] best candidate: "open, with a 10% chance of mechanical failure per day" (not exact); candidate_recall@K=miss
+  [    ] chars=53  (char range!)  |open, with a 10% chance of mechanical failure per day|
+  [result] no exact match | best candidate: "open, with a 10% chance of mechanical failure per day" | char-sim to GT: 3%
+======================================================================
+ORACLE DIAGNOSTIC (uses ground truth; not blind performance)
+  south_asia_assessment_span1_regional_partner: GT "regional partner" -> best "" the border units" in the text" (?)
+  south_asia_assessment_span2_border_force: GT "border force" -> best "nother map" (?)
+  south_asia_assessment_span3_india: GT "India" -> best "made, and the launch will proceed as planned" (?)
+  south_asia_assessment_span4_ambassador_rao: GT "Ambassador Rao" -> best "the system" (?)
+  south_asia_assessment_span5_defensive: GT "defensive" -> best "successful" (?)
+  arctic_shipping_span1_sea_ice: GT "sea ice" -> best "" (?)
+  arctic_shipping_span2_northern_route: GT "northern route" -> best "weather station" (?)
+  arctic_shipping_span3_icebreaker_escort: GT "icebreaker escort" -> best "emergency cargo manifest," (?)
+  arctic_shipping_span4_captain_sorensen: GT "Captain Sorensen" -> best "the captain" (?)
+  arctic_shipping_span5_stable: GT "stable" -> best "open, with a 10% chance of mechanical failure per day" (?)
+======================================================================
+BLIND BASELINE: exact=0/10  candidate_recall@K=0/10  (selection uses char range + generator order only)
+  paper_type=1: blind_exact=0/4  candidate_recall@K=0/4
+  paper_type=2: blind_exact=0/2  candidate_recall@K=0/2
+  paper_type=3: blind_exact=0/4  candidate_recall@K=0/4
+GENERATION DIAGNOSTICS (truncated responses are discarded)
+  api_attempts=60  http_responses=60  truncated=34  fim_truncated=34  chat_truncated=0  empty_responses=0  artifact_filtered=1  usable_candidates=13  fim_usable=13  chat_usable=0  fallback_chat=0  fim_requested_budget_min=8  fim_requested_budget_max=16  fim_requested_budget_mean=12.0
