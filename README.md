@@ -185,9 +185,11 @@ Useful validation commands, which do not require the LLaDA server, are:
 
 ```bash
 python validate_dataset.py
-python data/synthetic_v2/validate.py
-python unredact.py --dry-run --redactions redactions.json
+python data/synthetic_v2/validate.pypython unredact.py --dry-run --redactions redactions.json
+python unredact.py --dry-run --redactions redactions.json --n-eff
+python log_run.py n_eff --redactions redactions_broad.json --dry-run --n-eff --candidates 8
 typst compile index.typ index.pdf
+
 ```
 
 `--llada-steps` defaults to 64 and the client derives nearby token-span
@@ -284,10 +286,36 @@ Every run can be logged as a full text log + a graphable sidecar:
   ```
 
 Writes into `logs/`: `<ts>_<tag>.txt` (full text), `<ts>_<tag>.json`
-(structured sidecar: per-redaction rows incl. `control_sim` difficulty proxy +
-summary), and `runs.csv` (one row per run -- the improvement-progress file).
-See `logs/README.md`. The sidecar is produced by unredact.py's
-`--json-results` flag, so any run can be logged, not just via the wrapper.
+(structured sidecar: per-redaction rows incl. `control_sim` and optional
+`N_eff` difficulty diagnostics + summary), and `runs.csv` (one row per run --
+the improvement-progress file). See `logs/README.md`. The sidecar is produced
+by unredact.py's `--json-results` flag, so any run can be logged, not just via
+the wrapper.
+
+### Ground-truth-free difficulty (`N_eff`)
+
+Use `--n-eff` to estimate how concentrated the generated candidate support is
+for each box, without reading `ground_truth`:
+
+```bash
+python log_run.py n_eff --redactions redactions_broad.json \
+  --backend mercury --mode fim --candidates 8 --n-eff
+```
+
+The diagnostic computes `N_eff = exp(H)` from the empirical frequencies of
+cleaned candidate draws. Repeated draws count: a pool that repeatedly returns
+one normalized fill has low `N_eff`, while a pool spread across many fills has
+higher `N_eff`. The main reported value is computed after the leaked character
+range is applied; the sidecar also records the unfiltered pool. This is an
+**observed-support proxy**, not the model's true conditional entropy or a
+calibrated probability of recovery: the backend exposes no token likelihoods,
+small pools miss unseen outcomes, and generation/order effects remain. Ordinary
+ranking still deduplicates repeated strings; only the diagnostic preserves their
+sampling multiplicity.
+Empty in-range pools are reported per redaction and excluded from aggregate
+mean/median. Treat `N_eff` as a hypothesis-generating hardness signal; validate
+any relationship with blind recovery on repeated runs rather than claiming the
+thresholds in the roadmap as established facts.
 
 ## Token usage (Mercury free tier)
 

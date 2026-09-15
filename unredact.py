@@ -30,9 +30,13 @@ import argparse
 import difflib
 import html
 import json
+import math
 import os
 import sys
+import unicodedata
+from collections import Counter
 from datetime import datetime, timezone
+from statistics import mean, median
 
 # Reuse the keyness tokenizer/stemmer (stdlib-only module) so the echo guard
 # and the prior normalize words the same way.
@@ -272,9 +276,11 @@ class MercuryBackend:
         # a response that hit max_tokens must never enter the evaluation pool,
         # but we still need to quantify how often that happened.
         self.last_generation = {}
+        self.last_observed_candidates = []
         self._generation_stats = None
 
     def _begin_generation(self, red):
+        self._observed_candidates = []
         self._generation_stats = {
             "api_attempts": 0,
             "http_responses": 0,
@@ -283,6 +289,7 @@ class MercuryBackend:
             "chat_truncated": 0,
             "empty_responses": 0,
             "artifact_filtered": 0,
+            "duplicate_candidates": 0,
             "usable_candidates": 0,
             "fim_usable": 0,
             "chat_usable": 0,
@@ -296,6 +303,8 @@ class MercuryBackend:
         stats["returned_candidates"] = len(candidates)
         stats["in_range_candidates"] = sum(
             red["min_chars"] <= len(c) <= red["max_chars"] for c in candidates)
+        self.last_observed_candidates = list(self._observed_candidates or candidates)
+        stats["observed_candidates"] = len(self.last_observed_candidates)
         self.last_generation = stats
         self._generation_stats = None
         return candidates
@@ -431,13 +440,19 @@ class MercuryBackend:
                     text = ""
                 if text or ok:
                     break
-            if text and text not in candidates:
+            if text:
                 if self._is_artifact(text, before, after):
                     self._generation_stats["artifact_filtered"] += 1
                 else:
-                    candidates.append(text)
-                    self._generation_stats["usable_candidates"] += 1
-                    self._generation_stats["fim_usable"] += 1
+                    # Preserve repeated draws for N_eff; ordinary ranking still
+                    # receives a deduplicated candidate list below.
+                    self._observed_candidates.append(text)
+                    if text not in candidates:
+                        candidates.append(text)
+                        self._generation_stats["usable_candidates"] += 1
+                        self._generation_stats["fim_usable"] += 1
+                    else:
+                        self._generation_stats["duplicate_candidates"] += 1
             # Token budget: the first three calls already sweep every window
             # size, so stop once we have a usable pool (or have already hit
             # the ground truth), and bail out of FIM after that first sweep
@@ -522,10 +537,16 @@ class MercuryBackend:
                     text = ""
                 if text or ok:
                     break
-            if text and text not in candidates:
-                candidates.append(text)
-                self._generation_stats["usable_candidates"] += 1
-                self._generation_stats["chat_usable"] += 1
+            if text:
+                # Preserve repeated draws for N_eff; ordinary ranking still
+                # receives a deduplicated candidate list below.
+                self._observed_candidates.append(text)
+                if text not in candidates:
+                    candidates.append(text)
+                    self._generation_stats["usable_candidates"] += 1
+                    self._generation_stats["chat_usable"] += 1
+                else:
+                    self._generation_stats["duplicate_candidates"] += 1
             # Token budget: chat costs ~10x FIM per call, and a few candidates
             # is usually enough once verified downstream (unless --full-pool).
             if not self.full_pool and len(candidates) >= 3:
@@ -542,7 +563,10 @@ class EchoBackend:
         lo, hi = red["min_chars"], red["max_chars"]
         mid = (lo + hi) // 2
         lengths = [max(1, lo - 2), lo, mid, hi, hi + 2]  # below / in / above range
-        return ["W" * lengths[i % len(lengths)] for i in range(n)]
+        candidates = ["W" * lengths[i % len(lengths)] for i in range(n)]
+        self.last_observed_candidates = list(candidates)
+        self.last_generation = {"observed_candidates": len(candidates)}
+        return candidates
 
 
 def clean_llada_candidate(candidate):
@@ -628,9 +652,11 @@ class LladaBackend:
             raise ValueError("LLaDA candidate count must be at least 1")
 
         candidates = []
+        observed_candidates = []
         raw_count = 0
         empty_count = 0
         artifact_count = 0
+        duplicate_count = 0
         replacement_char_count = 0
         html_entity_count = 0
         continuation_count = 0
@@ -694,14 +720,20 @@ class LladaBackend:
                     else:
                         empty_count += 1
                     continue
+                # Repeated cleaned draws are evidence for the empirical
+                # candidate distribution, even though ranking uses one copy.
+                observed_candidates.append(cleaned)
                 if cleaned not in candidates:
                     candidates.append(cleaned)
                 else:
-                    artifact_count += 1
+                    # A repeated cleaned draw is valid evidence for N_eff,
+                    # not a malformed artifact.
+                    duplicate_count += 1
 
         # The server performs one masked-diffusion attempt per request. Keep
         # diagnostics compatible with the existing generation logger.
         valid_elapsed = [x for x in server_elapsed if isinstance(x, (int, float))]
+        self.last_observed_candidates = observed_candidates
         self.last_generation = {
             "api_attempts": len(requested_lengths),
             "http_responses": http_responses,
@@ -710,6 +742,7 @@ class LladaBackend:
             "chat_truncated": 0,
             "empty_responses": empty_count,
             "artifact_filtered": artifact_count,
+            "duplicate_candidates": duplicate_count,
             "replacement_char_artifacts": replacement_char_count,
             "html_entity_candidates": html_entity_count,
             "continuation_candidates": continuation_count,
@@ -727,6 +760,7 @@ class LladaBackend:
             "server_device": data.get("device"),
             "server_elapsed_ms_total": sum(valid_elapsed) if valid_elapsed else None,
             "server_gen_lengths": server_lengths,
+            "observed_candidates": len(observed_candidates),
         }
         return candidates
 
@@ -876,6 +910,78 @@ def blind_grade(red, ranked):
     }
 
 
+def estimate_n_eff(candidates):
+    """Estimate effective candidate support without using ground truth.
+
+    This is a deliberately modest first N_eff proxy. Candidate strings are
+    normalized only for case, Unicode compatibility, HTML entities, and
+    whitespace; each normalized outcome gets probability equal to its observed
+    frequency in the pool. Shannon perplexity, ``exp(H)``, is therefore the
+    effective number of distinct outcomes represented by the sample:
+
+      N_eff = exp(-sum(p_i * log(p_i)))
+
+    It is not the model's true conditional entropy: the backend does not expose
+    probabilities and a small candidate pool cannot measure unseen outcomes.
+    Values are consequently best read as "observed support difficulty". The
+    in-range pool is the main signal because it includes the leaked length
+    constraint; callers may also compute this for the unfiltered pool.
+    """
+    normalized = []
+    for candidate in candidates:
+        if not isinstance(candidate, str):
+            continue
+        text = html.unescape(unicodedata.normalize("NFKC", candidate))
+        text = " ".join(text.casefold().split())
+        if text:
+            normalized.append(text)
+    counts = Counter(normalized)
+    total = sum(counts.values())
+    if not total:
+        return {
+            "candidate_count": 0,
+            "unique_count": 0,
+            "entropy_nats": 0.0,
+            "n_eff": 0.0,
+            "n_eff_ratio": 0.0,
+            "top_share": 0.0,
+        }
+    probabilities = [count / total for count in counts.values()]
+    entropy = -sum(p * math.log(p) for p in probabilities)
+    n_eff = math.exp(entropy)
+    return {
+        "candidate_count": total,
+        "unique_count": len(counts),
+        "entropy_nats": entropy,
+        "n_eff": n_eff,
+        "n_eff_ratio": n_eff / total,
+        "top_share": max(counts.values()) / total,
+    }
+
+
+def summarize_n_eff(rows):
+    """Aggregate N_eff rows while preserving empty-pool cases explicitly."""
+    in_range = [row["in_range"]["n_eff"] for row in rows
+                if row["in_range"]["candidate_count"]]
+    all_pool = [row["all"]["n_eff"] for row in rows
+                if row["all"]["candidate_count"]]
+    return {
+        "n": len(rows),
+        "nonempty_in_range": len(in_range),
+        "mean": mean(in_range) if in_range else None,
+        "median": median(in_range) if in_range else None,
+        "mean_all_candidates": mean(all_pool) if all_pool else None,
+        "mean_in_range_candidates": (
+            mean(row["in_range"]["candidate_count"] for row in rows)
+            if rows else None
+        ),
+        "mean_in_range_unique": (
+            mean(row["in_range"]["unique_count"] for row in rows)
+            if rows else None
+        ),
+    }
+
+
 def _write_json(path, payload):
     """Write the structured sidecar for a run (used by --json-results)."""
     os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
@@ -893,6 +999,7 @@ def _generation_totals(stats_list):
         "chat_truncated": sum(s.get("chat_truncated", 0) for s in stats_list),
         "empty_responses": sum(s.get("empty_responses", 0) for s in stats_list),
         "artifact_filtered": sum(s.get("artifact_filtered", 0) for s in stats_list),
+        "duplicate_candidates": sum(s.get("duplicate_candidates", 0) for s in stats_list),
         "replacement_char_artifacts": sum(
             s.get("replacement_char_artifacts", 0) for s in stats_list),
         "html_entity_candidates": sum(
@@ -920,10 +1027,12 @@ def _generation_totals(stats_list):
 
 
 def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold=0.7,
-        prior_weight=0.0, priors=None, out=sys.stdout, json_path=None, meta=None):
+        prior_weight=0.0, priors=None, out=sys.stdout, json_path=None, meta=None,
+        args_n_eff=False):
     results = []  # legacy oracle results: (rid, gt, best, exact, sem, classification)
     blind_results = []
     details = []  # per-redaction dicts for the JSON sidecar (--json-results)
+    difficulty_details = []  # ground-truth-free N_eff diagnostics
     generation_stats = []
     printed_priors = set()
 
@@ -944,6 +1053,31 @@ def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold
         ranked = rank_candidates(cands, red)
         gen_stats = dict(getattr(backend, "last_generation", {}) or {})
         generation_stats.append(gen_stats)
+        if args_n_eff:
+            # Rank the deduplicated pool for selection, but estimate entropy
+            # from repeated observed draws when the backend exposes them.
+            observed = getattr(backend, "last_observed_candidates", None)
+            all_candidates = list(observed) if observed else [
+                info["text"] for _fits, info in ranked]
+            in_range_candidates = [
+                text for text in all_candidates
+                if red["min_chars"] <= len(text) <= red["max_chars"]
+            ]
+            difficulty = {
+                "id": red.get("id", "?"),
+                "paper_type": red.get("paper_type"),
+                "all": estimate_n_eff(all_candidates),
+                "in_range": estimate_n_eff(in_range_candidates),
+            }
+            difficulty_details.append(difficulty)
+            signal = difficulty["in_range"]
+            print(
+                f"  [n_eff] in-range={signal['candidate_count']} candidates, "
+                f"unique={signal['unique_count']}, H={signal['entropy_nats']:.2f}, "
+                f"N_eff={signal['n_eff']:.2f} "
+                "(ground-truth-free observed-support proxy)",
+                file=out,
+            )
         blind = blind_grade(red, ranked)
         blind_results.append(blind)
         print(f"  [blind] best candidate: \"{blind['best']}\" "
@@ -996,7 +1130,7 @@ def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold
                 "generation": gen_stats,
             })
 
-    if results:
+    if results or blind_results or difficulty_details:
         # Summary stats used by both the printed GRADED RECOVERY line and the
         # JSON sidecar (computed once). With the prior active the scores are the
         # blended finals (contrastive + prior), not raw contrastive.
@@ -1016,11 +1150,12 @@ def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold
             print("=" * 70, file=out)
             print(f"ORACLE DIAGNOSTIC: exact={exacts}  near-miss={near}  off-target={off}  "
                   f"{metric}={sum(semis) / len(semis):.2f}", file=out)
-        blind_exact = sum(1 for r in blind_results if r["exact"])
-        blind_recall = sum(1 for r in blind_results if r["candidate_recall"])
+        labeled_blind = [r for r in blind_results if r.get("ground_truth")]
+        blind_exact = sum(1 for r in labeled_blind if r["exact"])
+        blind_recall = sum(1 for r in labeled_blind if r["candidate_recall"])
         generation_totals = _generation_totals(generation_stats)
         by_type = {}
-        for row in blind_results:
+        for row in labeled_blind:
             key = str(row["paper_type"]) if row["paper_type"] is not None else "untyped"
             bucket = by_type.setdefault(key, {"n": 0, "blind_exact": 0,
                                               "candidate_recall": 0})
@@ -1028,24 +1163,38 @@ def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold
             bucket["blind_exact"] += int(row["exact"])
             bucket["candidate_recall"] += int(row["candidate_recall"])
         print("=" * 70, file=out)
-        print(f"BLIND BASELINE: exact={blind_exact}/{len(blind_results)}  "
-              f"candidate_recall@K={blind_recall}/{len(blind_results)}  "
+        print(f"BLIND BASELINE: exact={blind_exact}/{len(labeled_blind)}  "
+              f"candidate_recall@K={blind_recall}/{len(labeled_blind)}  "
               "(selection uses char range + generator order only)", file=out)
         for key, bucket in sorted(by_type.items()):
             print(f"  paper_type={key}: blind_exact={bucket['blind_exact']}/{bucket['n']}  "
                   f"candidate_recall@K={bucket['candidate_recall']}/{bucket['n']}", file=out)
         print("GENERATION DIAGNOSTICS (truncated responses are discarded)", file=out)
         print("  " + "  ".join(f"{k}={v}" for k, v in generation_totals.items()), file=out)
+        if args_n_eff:
+            n_eff_summary = summarize_n_eff(difficulty_details)
+            mean_n_eff = (f"{n_eff_summary['mean']:.2f}"
+                          if n_eff_summary["mean"] is not None else "n/a")
+            median_n_eff = (f"{n_eff_summary['median']:.2f}"
+                            if n_eff_summary["median"] is not None else "n/a")
+            print(
+                "N_EFF DIAGNOSTIC: "
+                f"mean_in_range={mean_n_eff} "
+                f"median_in_range={median_n_eff} "
+                f"nonempty={n_eff_summary['nonempty_in_range']}/{n_eff_summary['n']}; "
+                "observed-support proxy, not model entropy",
+                file=out,
+            )
         if json_path:
             _write_json(json_path, {
                 "schema": "unredact-run/v3",
                 "meta": meta or {},
                 "summary": {
-                    "n": len(results),
+                    "n": len(blind_results),
                     "blind_exact": blind_exact,
                     "candidate_recall_at_k": blind_recall,
-                    "blind_exact_rate": (blind_exact / len(blind_results)) if blind_results else None,
-                    "candidate_recall_rate": (blind_recall / len(blind_results)) if blind_results else None,
+                    "blind_exact_rate": (blind_exact / len(labeled_blind)) if labeled_blind else None,
+                    "candidate_recall_rate": (blind_recall / len(labeled_blind)) if labeled_blind else None,
                     "oracle_exact": exacts,
                     "oracle_near_miss": near,
                     "oracle_off_target": off,
@@ -1053,9 +1202,30 @@ def run(redactions, backend, candidates_per_box, scorer=None, semantic_threshold
                     "oracle_metric_label": metric,
                     "by_paper_type": by_type,
                     "generation": generation_totals,
+                    "n_eff": (summarize_n_eff(difficulty_details)
+                              if args_n_eff else None),
                 },
                 "redactions": details,
+                "difficulty": difficulty_details if args_n_eff else [],
             })
+    elif json_path:
+        # Keep a useful sidecar for a completely empty/generated-free run. N_eff
+        # is designed to remain measurable when ground_truth is absent.
+        # to remain measurable when ground_truth is absent.
+        _write_json(json_path, {
+            "schema": "unredact-run/v3",
+            "meta": meta or {},
+            "summary": {
+                "n": 0,
+                "blind_exact": None,
+                "candidate_recall_at_k": None,
+                "generation": _generation_totals(generation_stats),
+                "n_eff": (summarize_n_eff(difficulty_details)
+                          if args_n_eff else None),
+            },
+            "redactions": details,
+            "difficulty": difficulty_details if args_n_eff else [],
+        })
 
 
 def run_tightness_sweep(redactions, backend, candidates_per_box, deltas,
@@ -1283,6 +1453,10 @@ def main(argv=None):
                     "when FIM produces no in-range candidate. Keeps the FIM "
                     "budget experiment isolated from chat performance.")
 
+    ap.add_argument("--n-eff", action="store_true",
+                    help="Estimate ground-truth-free effective candidate support "
+                         "(N_eff = exp observed Shannon entropy) after length "
+                         "filtering; writes diagnostics to the sidecar.")
     ap.add_argument("--json-results", default="",
                     help="Write a structured JSON sidecar (per-redaction rows + "
                          "summary, or per-delta rows for --tightness-sweep) to "
@@ -1387,6 +1561,7 @@ def main(argv=None):
         "tightness_sweep": args.tightness_sweep,
         "no_length_hint": args.no_length_hint,
         "fim_only": args.fim_only,
+        "n_eff": args.n_eff,
         "dry_run": args.dry_run,
         "evaluation": "blind_top1_plus_candidate_recall_and_oracle_diagnostic",
     }
@@ -1399,6 +1574,10 @@ def main(argv=None):
         meta["git_commit"] = None
 
     json_path = args.json_results or None
+    if args.n_eff and args.tightness_sweep:
+        sys.exit("--n-eff is not available with --tightness-sweep yet; run "
+                 "a regular --n-eff evaluation so repeated candidate draws "
+                 "can be measured per redaction")
     if args.tightness_sweep:
         deltas = [int(x) for x in args.tightness_sweep.split(",") if x.strip()]
         if not deltas or any(d < 0 for d in deltas):
@@ -1408,7 +1587,9 @@ def main(argv=None):
                             json_path=json_path, meta=meta)
         return
     run(redactions, backend, args.candidates, scorer, args.semantic_threshold,
-        args.prior_weight, priors, json_path=json_path, meta=meta)
+        args.prior_weight, priors, json_path=json_path, meta=meta,
+        args_n_eff=args.n_eff)
+
 
 
 if __name__ == "__main__":
